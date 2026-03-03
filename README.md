@@ -298,7 +298,7 @@ It is commented out by default in `modules/packages.nix`:
 # Uncomment only when needed — external server can stall on download
 # pdfstudioviewer
 ```
-To enable, uncomment and rebuild. If the build hangs, cancel and retry.
+To enable, uncomment and rebuild.
 
 
 ---
@@ -308,6 +308,14 @@ To enable, uncomment and rebuild. If the build hangs, cancel and retry.
 See [POST_INSTALL.md](POST_INSTALL.md) for complete post-installation setup including fonts, Tor, Neovim, organize-tool, and Flatpak apps.
 
 ---
+
+## Troubleshooting
+
+See [TROUBLESHOOT.md](TROUBLESHOOT.md) for chroot recovery, password reset, and other system rescue procedures.
+
+
+---
+
 
 ## References
 
