@@ -268,16 +268,6 @@ nos
 
 ---
 
-## Disko Declarative Integration
-
-> **Branch:** `disko-declarative` — still under verification
-
-- Dual boot layout preserved (Windows untouched)
-- EFI reused (no reformat on rebuild)
-- LUKS2 + btrfs subvolumes fully declarative
-- `hardware-configuration.nix` no longer defines mounts
-
----
 
 ## Heavy Packages
 
