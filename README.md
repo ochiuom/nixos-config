@@ -299,6 +299,17 @@ Commented out by default in `modules/packages.nix`:
 
 To enable, uncomment and rebuild. Subsequent rebuilds use the cached store path and are instant.
 
+### PDFStudio Viewer
+
+PDFStudio Viewer downloads from an external server during install which can occasionally stall or fail due to server availability issues.
+
+It is commented out by default in `modules/packages.nix`:
+```nix
+# Uncomment only when needed — external server can stall on download
+# pdfstudioviewer
+```
+
+To enable, uncomment and rebuild. If the build hangs, cancel and retry.
 ---
 
 ## Post Installation
