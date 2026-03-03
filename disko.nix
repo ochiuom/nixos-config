@@ -49,31 +49,10 @@
 #   ✔ All data erased
 #
 # =============================================================
-# TO SWITCH SCENARIOS:
-#   - Scenario A is active below
-#   - Comment it out and uncomment Scenario B if needed
-# =============================================================
-
-
-## =============================================================
-# TO RUN:
-#   # 1. Clone config and run Disko
-#    git clone https://github.com/ochiuom/nixos-config
-#    cd nixos-config
-#    sudo nix run github:nix-community/disko -- --mode formatMount ./disko.nix
-
-# 2. Copy cloned config into mounted system
-#     sudo cp -r ../nixos-config /mnt/etc/nixos
-
-# 3. Install
-#     sudo nixos-install --root /mnt --flake /mnt/etc/nixos#ochinix-pc
-#
-# =============================================================
 # SCENARIO A — Dual Boot (Windows already installed)
 #   References existing partitions directly — does NOT touch
 #   the partition table, Windows partition, or EFI layout.
 #   Only formats nvme0n1p4 (LUKS2 + btrfs).
-#   Active by default — comment out if using Scenario B.
 # =============================================================
 
 { lib, ... }:
