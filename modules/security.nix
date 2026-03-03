@@ -9,7 +9,10 @@
       firefox = {
         executable = "${pkgs.firefox}/bin/firefox";
         profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
-        extraArgs = [ "--private-dev" "--noroot" ];
+       # extraArgs = [
+        #   "--noroot"
+         #  "--whitelist=~/.mozilla"
+          # "--whitelist=~/.cache/mozilla" ];
       };
     };
   };

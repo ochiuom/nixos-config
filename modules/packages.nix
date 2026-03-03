@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 {
   environment.systemPackages = with pkgs; [
-    git vim wget curl htop ffmpeg libva-utils tree ncdu
+    git vim wget curl htop ffmpeg libva-utils tree ncdu jq
     sbctl btrfs-progs cryptsetup pciutils usbutils lshw
     networkmanagerapplet xdg-utils xdg-desktop-portal-gnome glib gpick
 

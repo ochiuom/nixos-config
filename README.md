@@ -31,7 +31,7 @@ Coming from Arch, Fedora, and Ubuntu — NixOS is a fundamentally different appr
 | Machine | Lenovo ThinkPad T480s |
 | CPU | Intel Core i5-8250U (KabyLake-R) |
 | GPU | Intel UHD 620 (iGPU) |
-| RAM | 24GB (~1.2GB used at idle after full boot)  |
+| RAM | 24GB (~1.2GB used at idle after full boot) |
 | Swap | 11.6GB zram (zstd compressed, in-RAM) |
 | Storage | 476.9GB NVMe SSD (LUKS2 encrypted, btrfs) |
 
@@ -103,6 +103,7 @@ zram0          11.6GB   Compressed swap (zstd, 50% RAM)
 ├── flake.lock
 ├── configuration.nix             # Entry point, imports all modules
 ├── hardware-configuration.nix    # Auto-generated, do not edit
+├── disko.nix                     # Declarative disk layout (LUKS2 + btrfs + EFI)
 ├── home.nix                      # Home Manager configuration
 └── modules/
     ├── boot.nix                  # Bootloader, kernel, Plymouth, kernel params
@@ -115,6 +116,111 @@ zram0          11.6GB   Compressed swap (zstd, 50% RAM)
     └── services.nix              # Syncthing, Tor, Nix settings, GC
 ```
 
+---
+
+## Fresh Install from Live ISO
+
+This config is designed to be installed directly from the live ISO — no standard installer, no extra reboot, no manual post-clone setup. Boot the live ISO (or PXE via netboot.xyz), clone this repo, and run the install in one go.
+
+> Depending on what is enabled in `modules/packages.nix` and `home.nix`, the install will download packages accordingly. Current config downloads approximately **4.5GB**.
+
+### A. Find Your NVMe Device ID
+
+```bash
+# List drives and identify your NVMe vendor
+lsblk -d -o NAME,SIZE,MODEL
+```
+
+If the vendor is **INTEL**:
+```bash
+ls -l /dev/disk/by-id/ | grep INTEL
+```
+
+If the vendor is **TOSHIBA**:
+```bash
+ls -l /dev/disk/by-id/ | grep TOSHIBA
+```
+
+You will get an ID such as:
+```
+nvme-INTEL_SSDPEKNU512GZ_BTKA23010K50512A
+```
+
+**Put this ID into `disko.nix` before running any disko commands.**
+
+### B. BIOS Settings
+
+Before booting the live ISO:
+
+1. **Secure Boot** → Disabled
+2. **Setup Mode** → Enabled (puts firmware in a ready state to receive signed keys)
+
+### C. Install Steps
+
+Boot to the live ISO or PXE boot via a self-hosted netboot.xyz server.
+
+```bash
+# Install required tools upfront — avoids back-and-forth later
+nix-shell -p git e2fsprogs sbctl
+
+# Clone this config
+git clone https://github.com/ochiuom/nixos-config
+cd nixos-config
+
+# This is an automated process targeting /dev/nvme0n1p4
+# Verify the partition exists and is the correct target before wiping
+
+lsblk
+sudo wipefs -a /dev/nvme0n1p4
+lsblk
+
+# Format and mount declaratively using disko
+sudo nix --extra-experimental-features "nix-command flakes" \
+  run github:nix-community/disko -- --mode format,mount ./disko.nix
+
+# Flakes are not enabled by default on the live ISO.
+# Run everything with experimental features enabled.
+
+# Format and mount disks declaratively using disko
+sudo nix --extra-experimental-features "nix-command flakes" \
+  run github:nix-community/disko -- --mode format,mount ./disko.nix
+
+# Set up Secure Boot keys
+sbctl create-keys
+chattr -i /sys/firmware/efi/efivars/*
+sbctl enroll-keys --microsoft
+```
+
+Before running the install command, verify:
+
+1. `flake.nix` has `disko.nix` declared as a module
+2. Keyboard layout is consistent — `configuration.nix` (`console.keyMap = "us"` or `"uk"`) must match `hardware-configuration.nix` (`xkb.layout = "us"` or `"gb"`)
+
+```bash
+# Run the NixOS install (~4.5GB download, ~16GB disk space used)
+sudo nix --extra-experimental-features "nix-command flakes" \
+  run nixpkgs#nixos-install -- --flake .#ochinix-pc
+```
+
+When prompted, set the **root password**.
+
+### D. First Boot
+
+```bash
+reboot
+```
+
+- Default user password on first login: `changeme`
+- **Change your password immediately** after logging in
+- Remove the GNOME keyring to avoid Brave browser password popup on first launch:
+
+```bash
+rm -rf ~/.local/share/keyrings
+reboot
+```
+
+- After this reboot, **go into BIOS and re-enable Secure Boot** — the signed keys were enrolled during install, so it will now boot correctly with Secure Boot on
+- Once back in the OS, proceed to [POST_INSTALL.md](POST_INSTALL.md) for the rest of the setup
 ---
 
 ## Key Commands
@@ -166,21 +272,16 @@ nos
 
 ---
 
-## Quick Start
+## Disko Declarative Integration
 
-## 🚧 Disko Declarative Integration (Experimental)
-
-The `disko-declarative` branch integrates fully declarative disk management using Disko.
-
-⚠️ This branch is still under verification.
+> **Branch:** `disko-declarative` — still under verification
 
 - Dual boot layout preserved (Windows untouched)
 - EFI reused (no reformat on rebuild)
-- LUKS2 + Btrfs subvolumes fully declarative
-- hardware-configuration no longer defines mounts
+- LUKS2 + btrfs subvolumes fully declarative
+- `hardware-configuration.nix` no longer defines mounts
 
 ---
-
 
 ## Heavy Packages
 
@@ -191,9 +292,9 @@ Some packages are expensive to build from source and should only be added when n
 RustDesk compiles from source (Rust + Flutter) and is very resource intensive:
 - ~100% CPU for the entire build
 - ~9GB RAM during compilation
-- ~10-15 minutes build time
+- ~10–15 minutes build time
 
-It is commented out by default in `modules/packages.nix`:
+Commented out by default in `modules/packages.nix`:
 
 ```nix
 # Uncomment only when needed — expensive to build
@@ -206,7 +307,9 @@ To enable, uncomment and rebuild. Subsequent rebuilds use the cached store path 
 
 ## Post Installation
 
-See [POST_INSTALL.md](POST_INSTALL.md) for complete post installation setup including fonts, Tor, Neovim, organize-tool, and Flatpak apps.
+See [POST_INSTALL.md](POST_INSTALL.md) for complete post-installation setup including fonts, Tor, Neovim, organize-tool, and Flatpak apps.
+
+---
 
 ## References
 
