@@ -1,6 +1,23 @@
 # Troubleshooting
 
-## A. Chrooting into the System
+## A. Re-running Install After Config Mistakes
+
+Common mistakes during fresh install:
+- Wrong or missing NVMe device ID in `disko.nix` (check with `ls -l /dev/disk/by-id/ | grep INTEL`)
+- Missing module or input declaration in `flake.nix`
+
+If disko already ran and disks are mounted, you can fix the config and re-run the install without reformatting:
+
+```bash
+cd /mnt/home/ochinix/
+git clone https://github.com/ochiuom/nixos-config
+cd nixos-config
+
+# Fix the mistake in disko.nix or flake.nix, then re-run install
+sudo nixos-install --flake .#ochinix-pc
+```
+
+## B. Chrooting into the System
 
 If something goes wrong (e.g. root account locked after a bad `nrs` or `nos` build, lost password), you can chroot in from the live ISO or PXE boot via netboot.xyz and make changes directly.
 
