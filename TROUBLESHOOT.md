@@ -63,11 +63,11 @@ First follow as mentioned in "Step A : Mount the Encrypted System". Then do the 
 cd /mnt/home/ochinix/
 git clone https://github.com/ochiuom/nixos-config
 cd nixos-config
-```
+
 
 # Fix the mistake in disko.nix or flake.nix, then re-run install
 sudo nixos-install --flake .#ochinix-pc
-
+```
 
 ---
 
