@@ -5,15 +5,15 @@
 
   programs.firejail = {
     enable = true;
-    wrappedBinaries = {
-      firefox = {
-        executable = "${pkgs.firefox}/bin/firefox";
-        profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
+   # wrappedBinaries = {
+    #  firefox = {
+     #   executable = "${pkgs.firefox}/bin/firefox";
+      #  profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
        # extraArgs = [
         #   "--noroot"
          #  "--whitelist=~/.mozilla"
           # "--whitelist=~/.cache/mozilla" ];
-      };
-    };
+     # };
+    #};
   };
 }
