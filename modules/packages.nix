@@ -25,7 +25,7 @@
     yazi evince gparted baobab
     wl-color-picker localsend exfatprogs qpwgraph
 
-    pdfstudioviewer
+   # pdfstudioviewer
     strawberry
     gimp
     inkscape
