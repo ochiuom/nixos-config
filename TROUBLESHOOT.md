@@ -86,9 +86,9 @@ ls -l /dev/disk/by-id/ | grep INTEL
 Replace the device ID below with your actual ID from the command above:
 
 ```bash
-sudo wipefs -a /dev/disk/by-id/nvme-INTEL_SSDPEKNU512GZ_BTKA23010K50512A
-sudo sgdisk --zap-all /dev/disk/by-id/nvme-INTEL_SSDPEKNU512GZ_BTKA23010K50512A
-sudo dd if=/dev/zero of=/dev/disk/by-id/nvme-INTEL_SSDPEKNU512GZ_BTKA23010K50512A bs=1M count=100
+sudo wipefs -a /dev/disk/by-id/nvme-INTEL_SSDPEKNU512GZ_BTKA23010K50512A-part4
+sudo sgdisk --zap-all /dev/disk/by-id/nvme-INTEL_SSDPEKNU512GZ_BTKA23010K50512A-part4
+sudo dd if=/dev/zero of=/dev/disk/by-id/nvme-INTEL_SSDPEKNU512GZ_BTKA23010K50512A-part4 bs=1M count=100
 sudo partprobe
 ```
 
