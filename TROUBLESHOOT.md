@@ -110,9 +110,9 @@ Once clean, follow the standard install steps from README.md:
 sudo nix --extra-experimental-features "nix-command flakes" \
   run github:nix-community/disko -- --mode format,mount ./disko.nix
 
-sudo nix --extra-experimental-features "nix-command flakes" \
-  run nixpkgs#nixos-install -- --flake .#ochinix-pc
 ```
+
+and so on   
 
 ---
 
