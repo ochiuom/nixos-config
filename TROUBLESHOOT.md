@@ -46,6 +46,8 @@ rm -rf ~/.local/share/keyrings
 reboot
 ```
 
+---
+
 
 ## B. Re-running Install After Config Mistakes
 
@@ -65,6 +67,8 @@ cd nixos-config
 # Fix the mistake in disko.nix or flake.nix, then re-run install
 sudo nixos-install --flake .#ochinix-pc
 
+
+---
 
 ## C. Full Reinstall on Existing LUKS System from Live ISO
 
