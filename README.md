@@ -118,7 +118,7 @@ zram0          11.6GB   Compressed swap (zstd, 50% RAM)
 
 ---
 
-## Fresh Install from Live ISO
+## Fresh Install from Live ISO or PXE Boot (netboot.xyz)
 
 This config is designed to be installed directly from the live ISO — no standard installer, no extra reboot, no manual post-clone setup. Boot the live ISO (or PXE via netboot.xyz), clone this repo, and run the install in one go.
 
@@ -173,10 +173,6 @@ cd nixos-config
 lsblk
 sudo wipefs -a /dev/nvme0n1p4
 lsblk
-
-# Format and mount declaratively using disko
-sudo nix --extra-experimental-features "nix-command flakes" \
-  run github:nix-community/disko -- --mode format,mount ./disko.nix
 
 # Flakes are not enabled by default on the live ISO.
 # Run everything with experimental features enabled.
