@@ -308,8 +308,9 @@ It is commented out by default in `modules/packages.nix`:
 # Uncomment only when needed — external server can stall on download
 # pdfstudioviewer
 ```
-
 To enable, uncomment and rebuild. If the build hangs, cancel and retry.
+
+
 ---
 
 ## Post Installation
