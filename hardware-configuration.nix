@@ -22,6 +22,6 @@
 
   services.xserver = {
     enable = true;
-     xkb.layout = "gb";
+     xkb.layout = "us";
    };
 }
