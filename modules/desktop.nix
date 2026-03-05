@@ -17,30 +17,30 @@
   };
 
   fonts = {
-    packages = with pkgs; [
-      ubuntu-classic
-      liberation_ttf
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-color-emoji
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.fira-code
-      nerd-fonts.hack
-      font-awesome
-      atkinson-hyperlegible-next
-    ];
-    fontconfig = {
-      enable = true;
-      antialias = true;
-      hinting = { enable = true; style = "slight"; };
-      subpixel = { rgba = "rgb"; lcdfilter = "default"; };
-      defaultFonts = {
-        sansSerif = [ "Noto Sans" ];
-        serif     = [ "Noto Serif" ];
-        monospace = [ "JetBrainsMono Nerd Font" ];
-      };
+  packages = with pkgs; [
+    ubuntu-classic
+    liberation_ttf
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.hack
+    font-awesome
+    atkinson-hyperlegible-next
+  ];
+  fontconfig = {
+    enable = true;
+    antialias = true;
+    hinting = { enable = true; style = "slight"; };
+    subpixel = { rgba = "rgb"; lcdfilter = "default"; };
+    defaultFonts = {
+      sansSerif = [ "Segoe UI" "Noto Sans" "Liberation Sans" "Noto Color Emoji" ];
+      serif     = [ "Georgia" "Noto Serif" "Liberation Serif" "Noto Color Emoji" ];
+      monospace = [ "Cascadia Code" "JetBrainsMono Nerd Font" "Liberation Mono" "Noto Color Emoji" ];
     };
   };
+};
 
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;

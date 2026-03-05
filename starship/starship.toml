@@ -1,165 +1,181 @@
 format = """
-${custom.vault}\
-[](#3B4252)\
-$python\
-$conda\
+$custom\
+[](fg:#1a1b26 bg:none)\
+[](fg:#24283b bg:#1a1b26)\
+$os\
 $username\
-[](bg:#434C5E fg:#3B4252)\
+[](fg:#24283b bg:#2f3549)\
 $directory\
-[](fg:#434C5E bg:#4C566A)\
+[](fg:#2f3549 bg:#3b4261)\
 $git_branch\
 $git_status\
-[](fg:#4C566A bg:#86BBD8)\
-$c\
-$elixir\
-$elm\
-$golang\
-$haskell\
-$java\
-$julia\
-$nim\
+$git_state\
+[](fg:#3b4261 bg:#414868)\
+$nix_shell\
+$python\
 $rust\
-[](fg:#86BBD8 bg:#06969A)\
-$docker_context\
-[](fg:#06969A bg:#33658A)\
+$golang\
+$nodejs\
+$lua\
+$java\
+[](fg:#414868 bg:#565f89)\
+$cmd_duration\
+[](fg:#565f89 bg:#7aa2f7)\
 $time\
-[ ](fg:#33658A)\
+[](fg:#7aa2f7 bg:none)\
+$fill\
+$status\
+$line_break\
 $character"""
 
-
-# General settings
-add_newline = true          # keeps command output visually separated from prompt
+add_newline = false
 command_timeout = 5000
 
-# Prompt character
-[character]
-disabled = true
-#success_symbol = "[➜](bold #A3BE8C)"
-#error_symbol   = "[✖](bold #BF616A)"
-#vicmd_symbol   = "[◆](bold #A3BE8C)"
+# ── OS / User ──────────────────────────────────────────────────────────────
+[os]
+disabled = false
+style = "bg:#24283b fg:#7aa2f7"
+format = "[ $symbol ]($style)"
 
-
+[os.symbols]
+NixOS    = "󱄅"
+Linux    = ""
+Ubuntu   = ""
+Arch     = ""
+Debian   = ""
+Fedora   = ""
 
 [username]
-disabled = true
+disabled = false
+show_always = false
+style_user = "bg:#24283b fg:#c0caf5"
+style_root = "bg:#24283b fg:#f7768e"
+format = "[ $user ]($style)"
 
-# --------------------
-# Directory — central, compact
-# --------------------
+# ── Directory ──────────────────────────────────────────────────────────────
 [directory]
-style = "bg:#434C5E fg:#ECEFF4"
-format = "[ $path ]($style)"
+style = "bg:#2f3549 fg:#7dcfff bold"
+format = "[ 󰉋 $path ]($style)"
 home_symbol = "~"
 truncate_to_repo = true
-truncation_length = 1
+truncation_length = 2
 truncation_symbol = "…/"
-read_only = " 🔒"
-substitutions = { "Documents" = "󰈙 ", "Downloads" = " ", "Music" = " ", "Pictures" = " " }
+read_only = " 󰌾"
+substitutions = {
+  "Documents" = "󰈙 ",
+  "Downloads" = "󰇚 ",
+  "Music"     = "󰝚 ",
+  "Pictures"  = "󰉏 ",
+  "Videos"    = "󰕧 ",
+  "nixos"     = "󱄅 ",
+}
 
-# close the directory block visually with separator (next module will add its own bg)
-# Starship will concatenate modules; the overall visual is produced by consistent bg/fg
-
-
-
-[c]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
-
-[docker_context]
-symbol = " "
-style = "bg:#06969A"
-format = '[ $symbol $context ]($style)$path'
-
-[elixir]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
-
-[elm]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
-
+# ── Git ────────────────────────────────────────────────────────────────────
 [git_branch]
-symbol = ""
-style = "bg:#4C566A"
-format = '[ $symbol $branch ]($style)'
+symbol = ""
+style = "bg:#3b4261 fg:#9ece6a"
+format = "[ $symbol $branch ]($style)"
+truncation_length = 20
+truncation_symbol = "…"
 
 [git_status]
-style = "bg:#4C566A"
+style = "bg:#3b4261 fg:#e0af68"
 format = '[$all_status$ahead_behind ]($style)'
+conflicted = "󰞇 "
+ahead      = "⇡${count} "
+behind     = "⇣${count} "
+diverged   = "⇕⇡${ahead_count}⇣${behind_count} "
+untracked  = "󰋖 "
+stashed    = " "
+modified   = "󰝶 "
+staged     = " "
+renamed    = "󰑕 "
+deleted    = "󰗨 "
 
-[golang]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+[git_state]
+style = "bg:#3b4261 fg:#f7768e"
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
 
-[haskell]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
-
-[java]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
-
-[julia]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
-
-#[nodejs]
-#symbol = ""
-#style = "bg:#86BBD8"
-#format = '[ $symbol ($version) ]($style)'
-
-[nim]
-symbol = " "
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+# ── Languages ─────────────────────────────────────────────────────────────
+[nix_shell]
+symbol = "󱄅"
+style = "bg:#414868 fg:#7aa2f7"
+format = "[ $symbol $state ]($style)"
+impure_msg = ""
+pure_msg   = "pure"
 
 [python]
-style = "bg:#3B4252"
-# show virtualenv in parentheses when active; do NOT use backslash-escaped parens
-format = "[ ($virtualenv) ]($style)"
+symbol = ""
+style = "bg:#414868 fg:#e0af68"
+format = '[ $symbol $pyenv_prefix($version)(\($virtualenv\)) ]($style)'
+detect_extensions = ["py"]
 
 [rust]
-symbol = ""
-style = "bg:#86BBD8"
-format = '[ $symbol ($version) ]($style)'
+symbol = ""
+style = "bg:#414868 fg:#f7768e"
+format = "[ $symbol $version ]($style)"
+
+[golang]
+symbol = ""
+style = "bg:#414868 fg:#7dcfff"
+format = "[ $symbol $version ]($style)"
+
+[nodejs]
+symbol = ""
+style = "bg:#414868 fg:#9ece6a"
+format = "[ $symbol $version ]($style)"
+
+[lua]
+symbol = ""
+style = "bg:#414868 fg:#7aa2f7"
+format = "[ $symbol $version ]($style)"
+
+[java]
+symbol = ""
+style = "bg:#414868 fg:#e0af68"
+format = "[ $symbol $version ]($style)"
+
+# ── Duration + Time ────────────────────────────────────────────────────────
+[cmd_duration]
+min_time = 2000
+style = "bg:#565f89 fg:#e0af68"
+format = "[ 󱎫 $duration ]($style)"
 
 [time]
 disabled = false
-time_format = "%R"
-style = "bg:#33658A"
-format = '[ $time ]($style)'
+time_format = "%H:%M"
+style = "bg:#7aa2f7 fg:#1a1b26 bold"
+format = "[  $time ]($style)"
 
-#[conda]
-#symbol = " "
-#style = "bg:#5E81AC fg:#ECEFF4"
-#format = '[ $symbol $environment ]($style)'
-#ignore_base = false
+# ── Right side ─────────────────────────────────────────────────────────────
+[fill]
+symbol = " "
+
+[status]
+disabled = false
+symbol = "✘"
+success_symbol = ""
+style = "fg:#f7768e"
+format = "[$symbol $status]($style) "
+
+# ── Prompt character ───────────────────────────────────────────────────────
+[character]
+success_symbol = "[❯](bold #9ece6a)"
+error_symbol   = "[❯](bold #f7768e)"
+vimcmd_symbol  = "[❮](bold #bb9af7)"
+
+# ── Disabled clutter ───────────────────────────────────────────────────────
+[package]
+disabled = true
 
 [conda]
-symbol = " "
-style = "bg:#3B4252 fg:#ECEFF4" # Matching your first pill color
-format = '[ $symbol$environment ]($style)'
-ignore_base = false # Set to false so you can see when 'base' is active too
+disabled = true
 
-[custom.vault]
-command = """
-if mountpoint -q /home/ochiuom/Documents/Vault; then
-    echo "🔓 OPEN"
-else
-    echo ""
-fi
-"""
-when = "true"
-shell = ["bash", "--norc", "--noprofile"]
-format = "[$output](bold green) "
+[docker_context]
+disabled = true
 
+[aws]
+disabled = true
 
-
-
+[gcloud]
+disabled = true

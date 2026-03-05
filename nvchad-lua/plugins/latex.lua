@@ -4,7 +4,7 @@ return {
   init = function()
     vim.g.vimtex_compiler_method = "latexmk"
     vim.g.vimtex_compiler_latexmk = {
-      executable = "/usr/local/texlive/2025/bin/x86_64-linux/latexmk",
+      executable = "latexmk",
       options = {
         "-lualatex",
         "-interaction=nonstopmode",
@@ -18,8 +18,11 @@ return {
     vim.g.vimtex_syntax_enabled = 1
     vim.g.vimtex_syntax_conceal_disable = 0
     vim.g.vimtex_fold_enabled = 1
-
-    -- keymaps
     vim.keymap.set("n", "<leader>lw", ":VimtexCountWords<CR>")
+    vim.keymap.set("n", "<leader>lc", ":VimtexCompile<CR>")
+    vim.keymap.set("n", "<leader>lv", ":VimtexView<CR>")
+    vim.keymap.set("n", "<leader>le", ":VimtexErrors<CR>")
+    vim.keymap.set("n", "<leader>lk", ":VimtexStop<CR>")
+    vim.keymap.set("n", "<leader>lt", ":VimtexTocToggle<CR>")
   end,
 }

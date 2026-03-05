@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 {
   environment.systemPackages = with pkgs; [
-    git vim wget curl htop ffmpeg libva-utils tree ncdu jq mtr
+    git vim wget curl htop ffmpeg libva-utils tree ncdu
     sbctl btrfs-progs cryptsetup pciutils usbutils lshw
     networkmanagerapplet xdg-utils xdg-desktop-portal-gnome glib gpick
 
@@ -16,7 +16,8 @@
     texstudio
     firefox
     kitty ghostty
-    vscode zed-editor
+    vscode
+    # zed-editor
 
     vlc mpd mpc mpv mplayer smplayer
 
@@ -25,7 +26,7 @@
     yazi evince gparted baobab
     wl-color-picker localsend exfatprogs qpwgraph
 
-   # pdfstudioviewer
+    pdfstudioviewer
     strawberry
     gimp
     inkscape
@@ -40,9 +41,30 @@
     stylua                        # lua formatter
     texlab                        # latex
     zathura 
+    
     # LaTeX
-    # texlive installed separately — full scheme via official installer
-    # default binary path added to PATH in bashrc via home.nix
+    (pkgs.texlive.combine {
+    inherit (pkgs.texlive)
+    scheme-small
+    latex-bin  # Ensure pdflatex/lualatex are linked
+    latexmk
+    collection-luatex
+    revtex4-1    # ← needed for \documentclass[aps,rmp,...]{revtex4-2}
+    # Fonts & Symbols
+    charter noto fontspec amsmath amsfonts amscls
+    cm-super   # High-quality default fonts
+    physics mathtools cancel braket siunitx
+    # Graphics & Diagrams
+    pgf tikz-cd circuitikz quantikz
+    adjustbox  subfig 
+    # Layout & Tables
+    booktabs float multirow colortbl  
+    geometry microtype parskip setspace ragged2e enumitem etoolbox csquotes
+    titlesec changepage caption xcolor tcolorbox 
+    # Bibliography & Meta
+    hyperref biblatex biber fancyhdr lastpage orcidlink
+    babel babel-english;
+    })
 
     gnome-tweaks gnome-extension-manager
 
@@ -78,6 +100,7 @@
     gnomeExtensions.tailscale-status
     gnomeExtensions.workspace-matrix
     gnomeExtensions.wallpaper-slideshow
+    gnomeExtensions.dash-to-panel
   ];
 
 

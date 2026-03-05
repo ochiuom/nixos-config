@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 {
   home.username = "ochinix";
   home.homeDirectory = "/home/ochinix";
@@ -37,6 +37,7 @@
       experimental-features = [ "scale-monitor-framebuffer" "xwayland-native-scaling" ];
       edge-tiling = true;
       dynamic-workspaces = true;
+      center-new-windows = false; # Set to false to allow 'smart' positioning
     };
 
     "org/gnome/desktop/interface" = {
@@ -48,7 +49,7 @@
       monospace-font-name = lib.mkForce "JetBrainsMono Nerd Font 10";
       color-scheme = "prefer-dark";
       enable-animations = true;
-      text-scaling-factor = 0.95;
+      text-scaling-factor = 1.0;
       scaling-factor = lib.hm.gvariant.mkUint32 1;
     };
 
@@ -58,6 +59,7 @@
       auto-raise = false;
       focus-mode = "click";
       num-workspaces = 4;
+      window-placement = "automatic";
     };
 
     "org/gnome/shell" = {
@@ -95,6 +97,7 @@
         tailscale-status.extensionUuid
         workspace-matrix.extensionUuid
         wallpaper-slideshow.extensionUuid
+        dash-to-panel.extensionUuid
       ];
     };
 
@@ -157,8 +160,8 @@
   };
 
   home.file.".config/ghostty/config".text = ''
-    window-width = 90
-    window-height = 25
+    window-width = 105
+    window-height = 30
     window-step-resize = true
     font-family = JetBrains Mono
     font-size = 10
@@ -173,7 +176,11 @@
 
    home.file.".local/share/themes/Orchis-Dark-Compact".source = ./themes/Orchis-Dark-Compact;
    home.file.".local/share/icons/Hatter-Yaru".source = ./themes/Hatter-Yaru;
-   
+
+   home.activation.refreshIconCache = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  ${pkgs.gtk3}/bin/gtk-update-icon-cache -f -t ~/.local/share/icons/Hatter-Yaru || true
+  '';  
+ 
   programs.bash = {
   enable = true;
   enableCompletion = true;
@@ -262,7 +269,8 @@
         esac
       done
     }
-    _path_append "$HOME/.local/bin" "$HOME/.cargo/bin" "/usr/local/texlive/2025/bin/x86_64-linux"
+   # _path_append "$HOME/.local/bin" "$HOME/.cargo/bin" "/usr/local/texlive/2025/bin/x86_64-linux"
+   _path_append "$HOME/.local/bin" "$HOME/.cargo/bin"
     export PATH
 
     [ -f ~/.api_keys ] && source ~/.api_keys
@@ -343,6 +351,9 @@
     }
      
     eval "$(starship init bash)"
+   
+    # fastfetch FIRST before ble.sh
+    command -v fastfetch >/dev/null 2>&1 && fastfetch
 
     # ble.sh first
     if [ -f "${pkgs.blesh}/share/blesh/ble.sh" ]; then
@@ -368,7 +379,8 @@
       esac
     }
     bind -x '"\C-f": _fzf_cd'
-    command -v fastfetch >/dev/null 2>&1 && fastfetch
+   # command -v fastfetch >/dev/null 2>&1 && fastfetch
+   #blehook ATTACH+='command -v fastfetch >/dev/null 2>&1 && fastfetch'
 
     '';
   };
@@ -376,7 +388,7 @@
   home.sessionPath = [
     "$HOME/.local/bin"
     "$HOME/.cargo/bin"
-    "/usr/local/texlive/2025/bin/x86_64-linux"
+   # "/usr/local/texlive/2025/bin/x86_64-linux"
   ];
 
   programs.fzf = {
@@ -396,21 +408,25 @@
     enableBashIntegration = true;
   };
 
+#  programs.starship = {
+#    enable = true;
+#    settings = {
+#      add_newline = false;
+#      character = {
+#        success_symbol = "[❯](bold green)";
+#        error_symbol = "[❯](bold red)";
+#      };
+#      directory = {
+#        truncation_length = 3;
+#        truncate_to_repo = true;
+#      };
+#      git_branch.symbol = " ";
+#      nix_shell.symbol = " ";
+#    };
+#  };
+
   programs.starship = {
-    enable = true;
-    settings = {
-      add_newline = false;
-      character = {
-        success_symbol = "[❯](bold green)";
-        error_symbol = "[❯](bold red)";
-      };
-      directory = {
-        truncation_length = 3;
-        truncate_to_repo = true;
-      };
-      git_branch.symbol = " ";
-      nix_shell.symbol = " ";
-    };
+  enable = false;
   };
 
   programs.bat = {
@@ -455,10 +471,12 @@ systemd.user.timers.organize-downloads = {
   vimAlias = true;
   };
   
- home.activation.copyKitty = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.copyKitty = lib.hm.dag.entryAfter ["writeBoundary"] ''
   mkdir -p ~/.config/kitty
+  chmod -R u+w ~/.config/kitty 2>/dev/null || true
   cp -rf ${./kitty}/. ~/.config/kitty/
- '';
+  echo "${./kitty}" > ~/.config/kitty/.nix-source
+  '';
 
   home.activation.cleanStarshipBackup = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
   rm -f ~/.config/starship.toml.backup
@@ -528,6 +546,15 @@ systemd.user.timers.organize-downloads = {
    mkdir -p ~/Documents/.vault
    mkdir -p ~/Documents/Vault
    mkdir -p ~/Backups
+   '';
+
+   home.activation.copyGtkTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
+   mkdir -p ~/.config/gtk-3.0
+   mkdir -p ~/.config/gtk-4.0
+   chmod -R u+w ~/.config/gtk-3.0 2>/dev/null || true
+   chmod -R u+w ~/.config/gtk-4.0 2>/dev/null || true
+   cp -rf ${./themes/Orchis-Dark-Compact/gtk-3.0}/. ~/.config/gtk-3.0/
+   cp -rf ${./themes/Orchis-Dark-Compact/gtk-4.0}/. ~/.config/gtk-4.0/
    '';
 
   programs.home-manager.enable = true;

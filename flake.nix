@@ -21,10 +21,13 @@
     };
   };
 
-  outputs = { self, nixpkgs, lanzaboote, home-manager, disko, ... }: {
+  outputs = inputs@{ self, nixpkgs, lanzaboote,  home-manager, disko, ... }:
+  let
+    system = "x86_64-linux";
+  in {
     nixosConfigurations.ochinix-pc = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-
+      inherit system;
+      specialArgs = { inherit inputs; };
       modules = [
         # 🔥 Disko must come first
         disko.nixosModules.disko
@@ -37,11 +40,12 @@
         home-manager.nixosModules.home-manager
 
         {
+         nixpkgs.config.allowUnfree = true;
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.ochinix = import ./home.nix;
           home-manager.backupFileExtension = "backup";
-          nixpkgs.config.allowUnfree = true;
+          home-manager.extraSpecialArgs = { inherit inputs; };
         }
       ];
     };
