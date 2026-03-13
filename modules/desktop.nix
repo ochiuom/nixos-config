@@ -6,8 +6,9 @@
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour gnome-connections geary epiphany totem
     gnome-maps gnome-music gnome-weather gnome-contacts
-    gnome-clocks gnome-calendar gnome-logs gnome-software
+    gnome-clocks gnome-calendar gnome-logs gnome-software 
   ];
+  
 
   services.flatpak.enable = true;
   xdg.portal = {
@@ -60,4 +61,6 @@
       };
     };
   };
+
+
 }

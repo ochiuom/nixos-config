@@ -1,40 +1,26 @@
 { config, pkgs, lib, inputs, ... }:
-{
+{  
+  imports = [
+  ./modules/home/desktop-quote
+  ];
+
   home.username = "ochinix";
   home.homeDirectory = "/home/ochinix";
   home.stateVersion = "26.05";
 
+
   home.packages = with pkgs; [
-    yaru-theme
-    fzf
-    zoxide
-    fd
-    ripgrep
-    bat
-    btop
-    starship
-    eza
-    pipx
-    aria2
-    fastfetch
-    rsync
-    blesh
-    easyeffects
-    weylus
-    xournalpp
-    tigervnc
-    remmina
-    audacious
-    audacious-plugins
-    audacity
-    warp-terminal
-    cmus
-    mc
+    yaru-theme fzf zoxide fd ripgrep bat btop starship eza pipx aria2 fastfetch rsync blesh
+    easyeffects weylus xournalpp tigervnc remmina audacious audacious-plugins audacity
+    warp-terminal cmus yt-dlp lazygit delta dust duf bandwhich gping navi broot p7zip 
   ];
 
   dconf.settings = {
     "org/gnome/mutter" = {
-      experimental-features = [ "scale-monitor-framebuffer" "xwayland-native-scaling" ];
+      experimental-features = [
+             "scale-monitor-framebuffer"
+             "xwayland-native-scaling"  
+      ];
       edge-tiling = true;
       dynamic-workspaces = true;
       center-new-windows = false; # Set to false to allow 'smart' positioning
@@ -78,16 +64,16 @@
         ddterm.extensionUuid
         search-light.extensionUuid
         space-bar.extensionUuid
-        appindicator.extensionUuid
+       # appindicator.extensionUuid
         tiling-assistant.extensionUuid
-        logo-menu.extensionUuid
-        lock-guard.extensionUuid
+        #logo-menu.extensionUuid
+        #lock-guard.extensionUuid
         ip-finder.extensionUuid
         color-picker.extensionUuid
-        dash2dock-lite.extensionUuid
+        #dash2dock-lite.extensionUuid
         compact-top-bar.extensionUuid
         advanced-weather-companion.extensionUuid
-        adaptive-brightness.extensionUuid
+        #adaptive-brightness.extensionUuid
         astra-monitor.extensionUuid
         tophat.extensionUuid # astra ot top hat, suits your need
         gnome-40-ui-improvements.extensionUuid
@@ -95,9 +81,10 @@
         penguin-ai-chatbot.extensionUuid
         status-area-horizontal-spacing.extensionUuid
         tailscale-status.extensionUuid
-        workspace-matrix.extensionUuid
+        #workspace-matrix.extensionUuid
         wallpaper-slideshow.extensionUuid
         dash-to-panel.extensionUuid
+        "desktop-quote@ochinix"
       ];
     };
 
@@ -161,7 +148,7 @@
 
   home.file.".config/ghostty/config".text = ''
     window-width = 105
-    window-height = 30
+    window-height = 40
     window-step-resize = true
     font-family = JetBrains Mono
     font-size = 10
@@ -241,7 +228,29 @@
     update  = "cd /etc/nixos && sudo nix flake update && sudo nixos-rebuild switch --flake /etc/nixos#ochinix-pc";
     upgrade = "cd /etc/nixos && sudo nix flake update && sudo nixos-rebuild switch --flake /etc/nixos#ochinix-pc && ngc";
     nos="nh os switch --hostname ochinix-pc";
-  };
+  
+    lg  = "lazygit";
+    gd  = "git diff";          # now auto-uses delta
+    gds = "git diff --staged"; # delta side-by-side
+  
+    # Tmux
+    ta   = "tmux attach || tmux new-session -s main";
+    tn   = "tmux new-session -s";
+    tl   = "tmux list-sessions";
+    tk   = "tmux kill-session -t";
+
+    # Disk
+    du   = "dust";
+    df   = "duf";
+    bw   = "sudo bandwhich";
+
+    br  = "broot";
+    nav = "navi"; 
+    f = "pay-respects";
+
+    clean-cache = "rm -rf ~/.cache/mozilla/firefox/*.default/cache2 && rm -rf ~/.var/app/com.brave.Browser/cache/BraveSoftware/Brave-Browser/Default/Cache && echo 'Browser caches cleared'";
+    clean-all = "clean-cache && sudo journalctl --vacuum-time=7d && flatpak uninstall --unused -y && ngc && echo 'Full clean done'";
+};
 
   sessionVariables = {
     EDITOR   = "nvim";
@@ -365,9 +374,11 @@
       bleopt complete_menu_maxlines=15
       bleopt suggest_style=faint
     fi
+    
 
     # fzf after ble.sh
     eval "$(fzf --bash)"
+
     _fzf_comprun() {
       local command=$1
       shift
@@ -381,6 +392,35 @@
     bind -x '"\C-f": _fzf_cd'
    # command -v fastfetch >/dev/null 2>&1 && fastfetch
    #blehook ATTACH+='command -v fastfetch >/dev/null 2>&1 && fastfetch'
+   # command -v fastfetch >/dev/null 2>&1 && fastfetch
+   #blehook ATTACH+='command -v fastfetch >/dev/null 2>&1 && fastfetch'
+
+    syncto() {
+      local src="$1" dest="$2" label="$3"
+      local BOLD='\033[1m' CYAN='\033[0;36m' GREEN='\033[0;32m'
+      local YELLOW='\033[0;33m' RED='\033[0;31m' RESET='\033[0m'
+      echo -e "\n''${BOLD}''${CYAN}╔══════════════════════════════════════╗''${RESET}"
+      echo -e "''${BOLD}''${CYAN}║  🔄  RSYNC → ''${label}''${RESET}"
+      echo -e "''${BOLD}''${CYAN}╚══════════════════════════════════════╝''${RESET}"
+      echo -e "''${YELLOW}  SRC :''${RESET} $src"
+      echo -e "''${YELLOW}  DEST:''${RESET} $dest\n"
+      rsync -avz --delete --info=progress2 --human-readable "$src" "$dest" \
+        2>&1 | while IFS= read -r line; do
+          if [[ "$line" =~ ^deleting ]]; then
+            echo -e "''${RED}  $line''${RESET}"
+          elif [[ "$line" =~ "bytes/sec"|"total size" ]]; then
+            echo -e "''${GREEN}  $line''${RESET}"
+          elif [[ "$line" =~ ^sending|^receiving ]]; then
+            echo -e "''${CYAN}  $line''${RESET}"
+          else
+            echo "  $line"
+          fi
+        done
+      echo -e "\n''${GREEN}''${BOLD}✓ Done: ''${label}''${RESET}\n"
+    }
+
+    alias syncvault='syncto /home/ochinix/Documents/Vault/ pi5:/home/ochiuom/Nixos/Vault/ "Vault"'
+    alias syncworkdir='syncto /home/ochinix/workdir/ pi5:/home/ochiuom/Nixos/workdir/ "Workdir"'
 
     '';
   };
@@ -390,6 +430,167 @@
     "$HOME/.cargo/bin"
    # "/usr/local/texlive/2025/bin/x86_64-linux"
   ];
+
+
+ # programs.atuin = {
+  #enable = true;
+  #enableBashIntegration = true;
+  #settings = {
+   # auto_sync = false;        # no cloud, local only
+   # update_check = false;
+   # style = "compact";
+   # inline_height = 20;
+   # show_preview = true;
+   # filter_mode_shell_up_key_binding = "session";
+   # enter_accept = true;      # press Enter directly from search
+   # };
+  #};
+
+    programs.git = {
+    enable = true;
+    settings = {
+    merge.conflictstyle = "diff3";
+    diff.colorMoved = "default";
+    };
+  };
+
+  programs.delta = {
+  enable = true;
+  enableGitIntegration = true;
+  options = {
+    navigate = true;
+    dark = true;
+    side-by-side = true;
+    line-numbers = true;
+    syntax-theme = "TwoDark";
+    };
+  };
+
+  programs.lazygit = {
+  enable = true;
+  settings = {
+    gui = {
+      theme = {
+        activeBorderColor = [ "cyan" "bold" ];
+        inactiveBorderColor = [ "white" ];
+        selectedLineBgColor = [ "default" ];
+      };
+      showIcons = true;
+      nerdFontsVersion = "3";
+    };
+    git.pagers = [
+  {
+    diff = "delta --dark --paging=never";
+    staging = "delta --dark --paging=never";
+    mergeDiff = "delta --dark --paging=never";
+     }
+    ];
+   };
+ };
+
+   programs.tmux = {
+  enable = true;
+  clock24 = true;
+  escapeTime = 0;
+  historyLimit = 50000;
+  mouse = true;
+  terminal = "xterm-256color";
+  baseIndex = 1;
+  keyMode = "vi";
+  prefix = "C-a";
+  plugins = with pkgs.tmuxPlugins; [
+    sensible
+    yank
+    resurrect
+    continuum
+    {
+      plugin = catppuccin;
+      extraConfig = ''
+        set -g @catppuccin_flavour 'mocha'
+        set -g @catppuccin_window_default_text "#W"
+        set -g @catppuccin_window_current_text "#W"
+        set -g @catppuccin_status_modules_right "session date_time"
+        set -g @catppuccin_date_time_text "%H:%M"
+      '';
+    }
+  ];
+  extraConfig = ''
+    # True colour
+    set -ag terminal-overrides ",xterm-256color:RGB"
+
+    # Split panes with | and -
+    bind \\ split-window -h -c "#{pane_current_path}"
+    bind - split-window -v -c "#{pane_current_path}"
+    unbind '"'
+    unbind %
+
+    # Vim-style pane navigation
+    bind h select-pane -L
+    bind j select-pane -D
+    bind k select-pane -U
+    bind l select-pane -R
+
+    # Resize panes
+    bind -r H resize-pane -L 5
+    bind -r J resize-pane -D 5
+    bind -r K resize-pane -U 5
+    bind -r L resize-pane -R 5
+
+    # Reload config
+    bind r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
+
+    # Auto-restore sessions
+    set -g @resurrect-capture-pane-contents 'on'
+    set -g @continuum-restore 'on'
+    set -g @continuum-save-interval '10'
+
+    # New windows open in current path
+    bind c new-window -c "#{pane_current_path}"
+   '';
+  };
+
+  programs.pay-respects = {
+  enable = true;
+  enableBashIntegration = true;
+  }; 
+
+
+  programs.broot = {
+  enable = true;
+  enableBashIntegration = true;
+  settings = {
+    modal = true;
+    skin = {
+      default = "rgb(220, 220, 220) none";
+      tree = "rgb(89, 148, 220) none";
+      file = "rgb(220, 220, 220) none";
+      directory = "rgb(89, 148, 220) none Bold";
+      exe = "rgb(147, 220, 147) none";
+      link = "rgb(220, 147, 220) none";
+      pruning = "rgb(150, 150, 150) none Italic";
+      selected_line = "none rgb(40, 40, 60)";
+      char_match = "rgb(220, 220, 100) none Bold";
+      file_error = "rgb(220, 100, 100) none";
+      flag_label = "rgb(220, 220, 220) none";
+      flag_value = "rgb(220, 147, 89) none Bold";
+      input = "rgb(220, 220, 220) none";
+      status_error = "rgb(220, 100, 100) rgb(40, 40, 40)";
+      status_job = "rgb(89, 220, 220) rgb(40, 40, 40)";
+      status_normal = "rgb(220, 220, 220) rgb(40, 40, 40)";
+      status_italic = "rgb(220, 147, 89) rgb(40, 40, 40)";
+      status_bold = "rgb(220, 220, 100) rgb(40, 40, 40) Bold";
+      status_code = "rgb(147, 220, 220) rgb(40, 40, 40)";
+      status_ellipsis = "rgb(220, 220, 220) rgb(40, 40, 40)";
+      scrollbar_thumb = "rgb(89, 148, 220) none";
+      scrollbar_track = "rgb(40, 40, 40) none";
+      help_paragraph = "rgb(220, 220, 220) none";
+      help_bold = "rgb(220, 220, 100) none Bold";
+      help_italic = "rgb(220, 147, 89) none Italic";
+      help_code = "rgb(147, 220, 220) none";
+      help_headers = "rgb(89, 148, 220) none Bold";
+    };
+  };
+};
 
   programs.fzf = {
     enable = true;
@@ -556,6 +757,105 @@ systemd.user.timers.organize-downloads = {
    cp -rf ${./themes/Orchis-Dark-Compact/gtk-3.0}/. ~/.config/gtk-3.0/
    cp -rf ${./themes/Orchis-Dark-Compact/gtk-4.0}/. ~/.config/gtk-4.0/
    '';
+  
+   programs.bash.shellAliases = {
+   sage-env = "cd ~/Projects/Sage && nix develop --profile ~/.local/state/nix/profiles/sage";
+   };
 
   programs.home-manager.enable = true;
-}
+
+  
+  
+  programs.mpv = {
+  enable = true;
+  package = pkgs.mpv;
+
+  config = {
+    # Video
+    profile = "gpu-hq";
+    gpu-api = "vulkan";
+    hwdec = "vaapi";           # Intel iGPU on your T480s/L14
+    vo = "gpu-next";
+
+    # Audio
+    audio-normalize-downmix = true;
+    volume = 100;
+    volume-max = 150;
+
+    # Subtitles
+    sub-auto = "fuzzy";
+    sub-font = "JetBrains Mono";
+    sub-font-size = 42;
+    sub-color = "#FFFFFF";
+    sub-border-size = 2;
+    sub-border-color = "#000000";
+
+    # UI
+    osc = false;               # disable default OSC — using modernx below
+    osd-font = "JetBrains Mono";
+    osd-font-size = 28;
+    keep-open = true;          # don't close after video ends
+    save-position-on-quit = true;
+    screenshot-format = "png";
+    screenshot-directory = "~/Pictures/Screenshots";
+
+    # YouTube via yt-dlp
+    ytdl-format = "bestvideo[height<=1080]+bestaudio/best[height<=1080]";
+  };
+
+  bindings = {
+    # Seeking
+    "l" = "seek 5";
+    "h" = "seek -5";
+    "L" = "seek 30";
+    "H" = "seek -30";
+
+    # Volume
+    "j" = "add volume -5";
+    "k" = "add volume 5";
+
+    # Speed
+    "=" = "add speed 0.1";
+    "-" = "add speed -0.1";
+    "BS" = "set speed 1.0";
+
+    # Subtitles
+    "s" = "cycle sub";
+    "S" = "cycle sub down";
+
+    # Playlist
+    ">" = "playlist-next";
+    "<" = "playlist-prev";
+  };
+
+  scripts = with pkgs.mpvScripts; [
+  modernx          # modern OSC UI
+  sponsorblock     # skip sponsors on YouTube
+  thumbfast        # thumbnail preview on seek bar
+  autoload         # auto-load playlist entries
+  inhibit-gnome    # prevents screen blanking in GNOME
+  quality-menu     # change YouTube quality on the fly
+  mpris            # MPRIS integration (works with your media keys)
+  ];
+  
+
+  };
+
+  home.file.".sage/init.sage".text = ''
+  import matplotlib as mpl
+  mpl.rcParams.update({
+      'font.family': 'serif',
+      'font.size': 11,
+      'axes.labelsize': 12,
+      'figure.dpi': 300,
+      'figure.figsize': (6.5, 4.5),
+      'lines.linewidth': 1.5,
+      'axes.linewidth': 0.8,
+      'xtick.direction': 'in',
+      'ytick.direction': 'in',
+      'xtick.top': True,
+      'ytick.right': True,
+  })
+  '';
+
+ }

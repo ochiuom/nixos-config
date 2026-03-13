@@ -1,0 +1,7 @@
+{
+  "name": "Desktop Quote",
+  "description": "Shows a daily quote on the desktop",
+  "uuid": "desktop-quote@ochinix",
+  "version": 1,
+  "shell-version": ["45", "46", "47", "48", "49"]
+}

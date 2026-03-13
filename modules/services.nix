@@ -11,8 +11,9 @@
   services.tor = {
     enable = true;
     client.enable = true;
-    client.dns.enable = true;
+    client.dns.enable = false; # disabled — resolved handles DNS over TLS
   };
+
   programs.fuse.userAllowOther = true;
 
   nix.settings = {
@@ -20,6 +21,9 @@
     auto-optimise-store = true;
     min-free = 1073741824;
     max-free = 5368709120;
+    builders-use-substitutes = true;
+    keep-outputs = true;
+    keep-derivations = true;
     substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"

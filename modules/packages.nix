@@ -1,9 +1,9 @@
 { config, pkgs, lib, ... }:
 {
   environment.systemPackages = with pkgs; [
-    git vim wget curl htop ffmpeg libva-utils tree ncdu
-    sbctl btrfs-progs cryptsetup pciutils usbutils lshw
-    networkmanagerapplet xdg-utils xdg-desktop-portal-gnome glib gpick
+    git vim wget curl htop ffmpeg libva-utils tree ncdu ticker
+    sbctl btrfs-progs cryptsetup pciutils usbutils lshw openssl
+    networkmanagerapplet xdg-utils xdg-desktop-portal-gnome glib glib-networking gpick
 
     nautilus-python
     gobject-introspection
@@ -26,7 +26,7 @@
     yazi evince gparted baobab
     wl-color-picker localsend exfatprogs qpwgraph
 
-    pdfstudioviewer
+   # pdfstudioviewer
     strawberry
     gimp
     inkscape
@@ -36,12 +36,18 @@
     
     ymuse          # lightweight GTK, simple clean UI
     plattenalbum   # formerly mpdevil, more GNOME-native feel
+
+    nextcloud-client
+    gemini-cli opencode
     
     vscode-langservers-extracted  # html, css
     stylua                        # lua formatter
     texlab                        # latex
     zathura 
-    
+    pdfsam-basic
+    poppler-utils
+    pdfcpu
+    font-bitstream-type1
     # LaTeX
     (pkgs.texlive.combine {
     inherit (pkgs.texlive)
@@ -50,6 +56,7 @@
     latexmk
     collection-luatex
     revtex4-1    # ← needed for \documentclass[aps,rmp,...]{revtex4-2}
+    moderncv arydshln lm mathdesign
     # Fonts & Symbols
     charter noto fontspec amsmath amsfonts amscls
     cm-super   # High-quality default fonts
@@ -65,6 +72,7 @@
     hyperref biblatex biber fancyhdr lastpage orcidlink
     babel babel-english;
     })
+    
 
     gnome-tweaks gnome-extension-manager
 
@@ -81,16 +89,16 @@
     gnomeExtensions.ddterm
     gnomeExtensions.search-light
     gnomeExtensions.space-bar
-    gnomeExtensions.appindicator
+   # gnomeExtensions.appindicator
     gnomeExtensions.tiling-assistant
-    gnomeExtensions.logo-menu
-    gnomeExtensions.lock-guard
+   # gnomeExtensions.logo-menu
+   # gnomeExtensions.lock-guard
     gnomeExtensions.ip-finder
     gnomeExtensions.color-picker
-    gnomeExtensions.dash2dock-lite
+   # gnomeExtensions.dash2dock-lite
     gnomeExtensions.compact-top-bar
     gnomeExtensions.advanced-weather-companion
-    gnomeExtensions.adaptive-brightness
+   # gnomeExtensions.adaptive-brightness
     gnomeExtensions.astra-monitor
     gnomeExtensions.tophat
     gnomeExtensions.gnome-40-ui-improvements
@@ -98,7 +106,7 @@
     gnomeExtensions.penguin-ai-chatbot
     gnomeExtensions.status-area-horizontal-spacing
     gnomeExtensions.tailscale-status
-    gnomeExtensions.workspace-matrix
+   # gnomeExtensions.workspace-matrix
     gnomeExtensions.wallpaper-slideshow
     gnomeExtensions.dash-to-panel
   ];
@@ -108,4 +116,5 @@
    enable = true;
    flake = "/etc/nixos";
    };
+
 }

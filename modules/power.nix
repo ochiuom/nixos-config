@@ -37,18 +37,16 @@
   };
 
   boot.kernel.sysctl = {
-    "kernel.kptr_restrict" = 2;
-    "kernel.dmesg_restrict" = 1;
-    "kernel.yama.ptrace_scope" = 1;
-    "net.ipv4.icmp_echo_ignore_broadcasts" = 1;
-    "net.ipv4.conf.all.accept_redirects" = 0;
-    "net.ipv6.conf.all.accept_redirects" = 0;
-    "net.ipv4.conf.all.send_redirects" = 0;
-    "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
-    "net.ipv4.tcp_syncookies" = 1;
-    "net.ipv4.conf.all.log_martians" = 1;
-    "vm.swappiness" = 10;
-    "vm.vfs_cache_pressure" = 50;
+    # VM performance
+    "vm.swappiness"          = 10;
+    "vm.vfs_cache_pressure"  = 50;
+    "vm.dirty_ratio"         = 10;
+    "vm.dirty_background_ratio" = 5;
+    "vm.dirty_writeback_centisecs" = 1500;
+
+    # Network performance
     "net.core.rmem_max" = 2500000;
   };
+
+  services.irqbalance.enable = true;
 }
