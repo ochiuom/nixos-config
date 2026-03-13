@@ -97,9 +97,28 @@ environment.systemPackages = with pkgs; [
   texlab                        # latex LSP
 
   # LaTeX
-  # LaTeX
-  # texlive installed separately — full scheme via official installer
-  # default binary path added to PATH in bashrc via home.nix
+   (pkgs.texlive.combine {
+    inherit (pkgs.texlive)
+    scheme-small
+    latex-bin  # Ensure pdflatex/lualatex are linked
+    latexmk
+    collection-luatex
+    revtex4-1    # ← needed for \documentclass[aps,rmp,...]{revtex4-2}
+    # Fonts & Symbols
+    charter noto fontspec amsmath amsfonts amscls
+    cm-super   # High-quality default fonts
+    physics mathtools cancel braket siunitx
+    # Graphics & Diagrams
+    pgf tikz-cd circuitikz quantikz
+    adjustbox  subfig 
+    # Layout & Tables
+    booktabs float multirow colortbl  
+    geometry microtype parskip setspace ragged2e enumitem etoolbox csquotes
+    titlesec changepage caption xcolor tcolorbox 
+    # Bibliography & Meta
+    hyperref biblatex biber fancyhdr lastpage orcidlink
+    babel babel-english;
+    })
 
   # PDF viewer (auto-reloads on recompile)
   zathura
@@ -222,6 +241,114 @@ backupv    # rsync encrypted .vault to ~/Backups (safe to backup encrypted)
 
 ---
 
+# SageMath — NixOS Devshell
+
+No conda, no pip, no ISO. Pure Nix.
+
+---
+
+## Structure
+
+```
+~/Projects/Sage/
+├── flake.nix    ← nixpkgs pinned to 25.11 stable
+└── flake.lock   ← auto-generated, do not edit
+```
+
+---
+
+## First Time Setup
+
+```bash
+cd ~/Projects/Sage
+nix develop --profile ~/.local/state/nix/profiles/sage
+```
+
+> Downloads ~4.5GB on first run. Leave it alone until it finishes.
+> `--profile` pins the env so garbage collection never wipes it.
+
+---
+
+## Daily Usage
+
+```bash
+sage-env    # alias → cd ~/Projects/Sage && nix develop
+sage        # REPL
+```
+
+Or for Jupyter notebook:
+
+```bash
+sage-env
+sage -n jupyter
+```
+
+Once inside `nix develop`, you can `cd` anywhere — env stays active for that shell session.
+
+---
+
+## Quick Test
+
+```python
+sage: var('x y')
+sage: plot(sin(x), (x, -2*pi, 2*pi))
+sage: plot3d(sin(x^2 + y^2), (x,-3,3),(y,-3,3))
+```
+
+> For best plot rendering use `sage -n jupyter` — opens inline in browser.
+
+---
+
+## Garbage Collection Protection
+
+The profile pin + NixOS config ensures sage survives `nix-collect-garbage`.
+
+In `modules/packages.nix`:
+
+```nix
+nix.extraOptions = ''
+  keep-outputs = true
+  keep-derivations = true
+'';
+```
+
+Re-pin after any fresh download:
+
+```bash
+cd ~/Projects/Sage
+nix develop --profile ~/.local/state/nix/profiles/sage
+```
+
+---
+
+## Updating
+
+```bash
+cd ~/Projects/Sage
+nix flake update
+nix develop --profile ~/.local/state/nix/profiles/sage
+```
+
+---
+
+## `flake.nix`
+
+```nix
+{
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+
+  outputs = { self, nixpkgs }: let
+    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+  in {
+    devShells.x86_64-linux.default = pkgs.mkShell {
+      buildInputs = [ pkgs.sage ];
+    };
+  };
+}
+```
+
+---
+
 ### Flatpak Applications
 
 Installed via Flathub. Browsers and KDE apps kept as Flatpak for sandboxing and self-containment.
@@ -249,7 +376,7 @@ Installed via Flathub. Browsers and KDE apps kept as Flatpak for sandboxing and 
 
 Install all at once:
 ```bash
-flatpak install flathub com.brave.Browser com.microsoft.Edge com.opera.Opera com.github.PintaProject.Pinta com.github.ahrm.sioyek com.github.iwalton3.jellyfin-media-player com.orama_interactive.Pixelorama io.github.alainm23.planify io.github.electronstudio.WeylusCommunityEdition org.kde.elisa org.kde.krita org.kde.okular org.localsend.localsend_app org.octave.Octave org.onlyoffice.desktopeditors org.signal.Signal org.telegram.desktop org.mozilla.Thunderbird
+flatpak install flathub com.brave.Browser com.microsoft.Edge com.opera.Opera com.github.PintaProject.Pinta com.github.ahrm.sioyek com.github.iwalton3.jellyfin-media-player com.orama_interactive.Pixelorama io.github.alainm23.planify io.github.electronstudio.WeylusCommunityEdition org.kde.elisa org.kde.krita org.kde.okular org.localsend.localsend_app org.octave.Octave org.onlyoffice.desktopeditors org.signal.Signal org.telegram.desktop org.mozilla.Thunderbird net.code_industry.MasterPDFEditor
 ```
 
 ---
@@ -259,7 +386,7 @@ flatpak install flathub com.brave.Browser com.microsoft.Edge com.opera.Opera com
 Once settled post-installation, clone the config into `/etc/nixos` to add packages or modify any module:
 
 ```bash
-sudo git clone https://github.com/ochiuom/nixos-config /etc/nixos
+sudo git clone https://github.com/ochiuom/nixos-config-1os /etc/nixos
 sudo chown -R ochinix:users /etc/nixos
 cd /etc/nixos
 
@@ -268,8 +395,9 @@ cd /etc/nixos
 nsr
 # or with visual output and generation diff tracking
 nos
-```
 
 # If you notice any visual glitches or changes not reflected after rebuild,
 # a logout or full reboot will apply everything cleanly
+```
+
 ---
