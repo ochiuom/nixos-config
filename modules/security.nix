@@ -79,10 +79,11 @@
   services.resolved = {
   enable = true;
   settings.Resolve = {
-    DNSSEC = "true";
-    Domains = [ "~." ];
-    FallbackDNS = [ "1.1.1.1#cloudflare-dns.com" "9.9.9.9#dns.quad9.net" ];
-    DNSOverTLS = "yes";
+    DNS = "1.1.1.1 8.8.8.8";
+    FallbackDNS="9.9.9.9";
+    #FallbackDNS = [ "1.1.1.1#cloudflare-dns.com" "9.9.9.9#dns.quad9.net" ];
+    DNSSEC="allow-downgrade";
+    DNSOverTLS = "opportunistic";
    };
  };
 }
