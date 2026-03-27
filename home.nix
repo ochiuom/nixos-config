@@ -27,7 +27,7 @@
     cmus yt-dlp
 
     # Desktop / GUI
-    warp-terminal tigervnc remmina zed-editor carapace
+    warp-terminal tigervnc remmina  carapace
    	 
  ];
 
