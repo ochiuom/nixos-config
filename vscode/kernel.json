@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "sage",
+    "--python",
+    "-m",
+    "sage.repl.ipython_kernel",
+    "-f",
+    "{connection_file}"
+  ],
+  "display_name": "SageMath (Nix)",
+  "language": "sage",
+  "env": {
+    "PATH": "/home/ochinix/.local/state/nix/profiles/sage/bin:/usr/bin:/bin"
+  }
+}

@@ -1,0 +1,32 @@
+blue = c2d9ffff
+blue-dark = 5187d8ff
+
+teal = bcece2ff
+teal-dark = 33b89dff
+
+green = afe9c6ff
+green-dark = 46b973ff
+
+yellow = ffeeaaff
+yellow-dark = d8b72fff
+
+orange = ffdac1ff
+orange-dark = fa8a3fff
+
+red = ffd5d5ff
+red-dark = f67575ff
+
+pink = ffd5f6ff
+pink-dark = e067c7ff
+
+purple = edd0f1ff
+purple-dark = a76caeff
+
+slate = dde2e6ff
+slate-dark = 6f8396ff
+
+violet = d7d7f4ff
+violet-dark = 8787deff
+
+custom = e2dbe3ff
+custom-dark = a793acff

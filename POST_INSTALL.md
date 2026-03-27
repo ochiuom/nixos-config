@@ -1,133 +1,295 @@
+# ochinix-pc — Post Installation Guide
 
-## Post Installation
+> Manual steps required after a fresh NixOS deploy. Everything else is handled declaratively.
 
-### Boot Splash Theme
+---
 
-Using `systemd-boot` with `lanzaboote`, not GRUB. Plymouth splash is configured in `modules/boot.nix`:
+## Table of Contents
+
+1. [Change Password](#1-change-password)
+2. [Clone Config](#2-clone-config)
+3. [Flatpak Applications](#3-flatpak-applications)
+4. [Fonts](#4-fonts)
+5. [Boot Splash Theme](#5-boot-splash-theme)
+6. [Encrypted Vault](#6-encrypted-vault)
+7. [USBGuard](#7-usbguard)
+8. [ProtonVPN & DNS](#8-protonvpn--dns)
+9. [Tor + Thunderbird](#9-tor--thunderbird)
+10. [API Keys](#10-api-keys)
+11. [Neovim / NvChad](#11-neovim--nvchad)
+12. [SageMath Devshell](#12-sagemath-devshell)
+13. [organize-tool](#13-organize-tool)
+14. [Syncthing](#14-syncthing)
+15. [GSConnect](#15-gsconnect)
+16. [EasyEffects](#16-easyeffects)
+17. [MPD](#17-mpd)
+18. [SSH — Adding a New Client](#18-ssh--adding-a-new-client)
+19. [Boot Partition Maintenance](#19-boot-partition-maintenance)
+
+---
+
+## 1. Change Password
+
+`initialPassword` in `configuration.nix` is set to `changeme`. Change it immediately after first boot:
+
+```bash
+passwd ochinix
+```
+
+---
+
+## 2. Clone Config
+
+```bash
+sudo git clone https://github.com/ochiuom/nixos-config-1os /etc/nixos
+sudo chown -R ochinix:users /etc/nixos
+cd /etc/nixos
+```
+
+Edit any module as needed, then rebuild:
+
+```bash
+nos       # rebuild with visual output
+```
+
+If visual glitches appear after rebuild, a logout or full reboot will apply everything cleanly.
+
+---
+
+## 3. Flatpak Applications
+
+Install all Flatpak apps in one command:
+
+```bash
+flatpak install flathub \
+  com.brave.Browser \
+  com.microsoft.Edge \
+  com.opera.Opera \
+  com.github.PintaProject.Pinta \
+  com.github.ahrm.sioyek \
+  com.github.iwalton3.jellyfin-media-player \
+  com.orama_interactive.Pixelorama \
+  io.github.alainm23.planify \
+  io.github.electronstudio.WeylusCommunityEdition \
+  org.kde.elisa \
+  org.kde.krita \
+  org.kde.okular \
+  org.localsend.localsend_app \
+  org.octave.Octave \
+  org.onlyoffice.desktopeditors \
+  org.signal.Signal \
+  org.telegram.desktop \
+  org.mozilla.Thunderbird \
+  net.code_industry.MasterPDFEditor
+```
+
+| Application | ID |
+|---|---|
+| Brave | `com.brave.Browser` |
+| Microsoft Edge | `com.microsoft.Edge` |
+| Opera | `com.opera.Opera` |
+| Pinta | `com.github.PintaProject.Pinta` |
+| Sioyek | `com.github.ahrm.sioyek` |
+| Jellyfin Media Player | `com.github.iwalton3.jellyfin-media-player` |
+| Pixelorama | `com.orama_interactive.Pixelorama` |
+| Planify | `io.github.alainm23.planify` |
+| Weylus Community Edition | `io.github.electronstudio.WeylusCommunityEdition` |
+| Elisa | `org.kde.elisa` |
+| Krita | `org.kde.krita` |
+| Okular | `org.kde.okular` |
+| LocalSend | `org.localsend.localsend_app` |
+| GNU Octave | `org.octave.Octave` |
+| ONLYOFFICE | `org.onlyoffice.desktopeditors` |
+| Signal | `org.signal.Signal` |
+| Telegram | `org.telegram.desktop` |
+| Thunderbird | `org.mozilla.Thunderbird` |
+| Master PDF Editor | `net.code_industry.MasterPDFEditor` |
+
+---
+
+## 4. Fonts
+
+Fonts are managed via `home.nix` and deployed automatically on every rebuild. No manual installation needed.
+
+**Inter** (UI font) must be present in `fonts/` in the repo:
+- Download: https://fonts.google.com/specimen/Inter
+
+On rebuild, fonts are copied to `~/.local/share/fonts/` and the font cache is refreshed automatically.
+
+| Role | Font |
+|---|---|
+| Interface | Inter Regular 11 |
+| Document | Noto Sans Regular 11 |
+| Monospace | JetBrains Mono 10 |
+
+---
+
+## 5. Boot Splash Theme
+
+Plymouth splash is configured in `modules/boot.nix`:
+
 ```nix
 boot.plymouth.theme = "bgrt";
 ```
 
-`bgrt` displays your vendor logo (Lenovo on T480s). Change to any installed Plymouth theme. No GRUB config needed.
+`bgrt` displays the vendor logo (Lenovo). No GRUB config needed — system uses `systemd-boot` with `lanzaboote`.
 
 ---
 
-### Fonts
+## 6. Encrypted Vault
 
-Fonts are managed via `home.nix` and deployed automatically on every rebuild — no manual installation needed.
+Vault directories are created automatically on every rebuild via `home.nix`. One-time initialisation required after fresh install:
 
-**Inter** (UI font) is downloaded from Google Fonts and tracked in the repo under `fonts/`:
-- Download: https://fonts.google.com/specimen/Inter
-
-On rebuild, fonts are copied to `~/.local/share/fonts/` and the font cache is refreshed automatically. GNOME picks them up without any manual Tweaks configuration.
-
-Fonts applied automatically:
-- Interface text: `Inter Regular 11`
-- Document text: `Noto Sans Regular 11`
-- Monospace text: `JetBrains Mono 10`
-
----
-
-### Tor + Thunderbird
-
-Tor client runs locally on `localhost:9050`. To route Thunderbird email over Tor for secure sending and receiving:
-
-In Thunderbird → Settings → General → Network Settings → Manual proxy:
-- SOCKS Host: `localhost`
-- Port: `9050`
-- Select: `SOCKS v5`
-- Check: **Proxy DNS when using SOCKS v5**
-
----
-
-### organize-tool
-
-Automatically sorts `~/Downloads` by file type into subfolders hourly via a systemd user timer declared in `home.nix`.
-
-Install after first rebuild:
 ```bash
-pipx install organize-tool
-pipx ensurepath
-organize --version
+gocryptfs -init ~/Documents/.vault
+# Set a strong password when prompted
 ```
 
-The config is tracked in this repo at `organize/config.yaml` and deployed automatically via `home.nix` on every rebuild — no manual file creation needed.
+**Directory structure:**
+```
+~/
+├── Documents/
+│   ├── .vault/     ← encrypted storage (tracked by gocryptfs)
+│   └── Vault/      ← mount point (empty when locked)
+└── Backups/
+    └── Vault_Encrypted_Backup/
+```
+
+**Daily usage:**
+
+```bash
+unlockv    # mount vault — enter password, files appear in ~/Documents/Vault
+lockv      # unmount vault — files hidden
+backupv    # rsync encrypted .vault to ~/Backups
+```
+
+> Lock the vault before suspending or leaving the machine unattended.
 
 ---
 
-# Neovim / NvChad + LaTeX Workflow
+## 7. USBGuard
 
-Neovim is installed via NixOS packages but without any config files — it's a bare install. To set up NvChad as the config and plugin manager, follow the steps below.
+USBGuard is enabled in `security.nix` with a hardcoded policy for the L14. On a fresh install or new machine, regenerate the policy from currently connected devices.
+
+**Plug in all devices to whitelist first, then:**
+
+```bash
+sudo usbguard generate-policy
+```
+
+Copy the output into `security.nix` under `services.usbguard.rules`.
+
+**Currently whitelisted on L14:**
+
+| Device | ID |
+|---|---|
+| xHCI Host Controller (USB 2.0) | `1d6b:0002` |
+| xHCI Host Controller (USB 3.0) | `1d6b:0003` |
+| EMV Smartcard / SD Card Reader | `058f:9540` |
+| Integrated Camera | `13d3:56ff` |
+
+**Allowing a new USB device:**
+
+```bash
+# List all devices including blocked ones
+sudo usbguard list-devices
+
+# Allow temporarily (until reboot)
+sudo usbguard allow-device <ID>
+
+# Allow permanently (running policy only — not persisted to nix config)
+sudo usbguard allow-device <ID> -p
+```
+
+To persist permanently, run `sudo usbguard generate-policy` again and update `security.nix`.
 
 ---
 
-## Step 1 — Install NvChad
+## 8. ProtonVPN & DNS
+
+ProtonVPN is used via WireGuard through NetworkManager. No app required.
+
+```bash
+# Download WireGuard config from account.proton.me
+# Rename to a valid interface name
+mv ProtonVPN-config.conf protonvpn-xx.conf
+
+nmcli connection import type wireguard file protonvpn-xx.conf
+nmcli connection modify protonvpn-xx ipv6.method ignore
+
+# Connect / disconnect
+nmcli connection up protonvpn-xx
+nmcli connection down protonvpn-xx
+```
+
+Toggle from GNOME top panel → network icon → VPN section.
+
+**DNS note:** ProtonVPN pushes its own DNS which conflicts with `systemd-resolved`. DNSSEC validation is intentionally disabled in `security.nix`:
+
+```nix
+DNSSEC = "false";
+DNSOverTLS = "opportunistic";
+```
+
+Do not change these values. If DNS breaks after connecting:
+
+```bash
+resolvectl status
+sudo journalctl -u systemd-resolved -n 30
+```
+
+---
+
+## 9. Tor + Thunderbird
+
+Tor client runs on `localhost:9050`. To route Thunderbird over Tor:
+
+**Thunderbird → Settings → General → Network Settings → Manual proxy:**
+
+| Field | Value |
+|---|---|
+| SOCKS Host | `localhost` |
+| Port | `9050` |
+| Version | SOCKS v5 |
+| DNS | Proxy DNS when using SOCKS v5 ✓ |
+
+---
+
+## 10. API Keys
+
+API keys are stored in `~/.api_keys` and sourced automatically from `.bashrc`. This file is not tracked in the repo. Recreate on fresh install:
+
+```bash
+cat > ~/.api_keys << 'EOF'
+export GEMINI_API_KEY="..."
+export OPENROUTER_API_KEY="..."
+EOF
+chmod 600 ~/.api_keys
+```
+
+---
+
+## 11. Neovim / NvChad
+
+Neovim is installed via Nix as a bare binary. NvChad must be bootstrapped manually.
+
+**Step 1 — Install NvChad:**
 
 ```bash
 git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
 ```
 
-NvChad will auto-install on first launch. Let it complete then restart nvim.
+Let lazy.nvim install all plugins on first launch, then restart nvim.
 
-> Reference: https://nvchad.com/docs/quickstart/install/
-
----
-
-## Step 2 — Apply NvChad Custom Layer from This Repo
-
-After NvChad finishes installing on first `nvim` launch, rebuild NixOS to copy the custom config layer from this repo on top of NvChad:
+**Step 2 — Apply custom config layer:**
 
 ```bash
-sudo nixos-rebuild switch --flake /etc/nixos#ochinix-pc
+nos
 ```
 
-This copies the extra config files declared in `home.nix` into `~/.config/nvim/` without replacing or breaking NvChad — safe to run after every NvChad update as well.
+This copies the custom config files from the repo onto NvChad. Safe to run after every NvChad update.
 
----
-
-## NixOS Packages Required
-
-Add to `environment.systemPackages` in `configuration.nix`:
-
-```nix
-environment.systemPackages = with pkgs; [
-  # LSPs (via Nix, not Mason)
-  vscode-langservers-extracted  # html-lsp, css-lsp, json-lsp
-  stylua                        # lua formatter
-  texlab                        # latex LSP
-
-  # LaTeX
-   (pkgs.texlive.combine {
-    inherit (pkgs.texlive)
-    scheme-small
-    latex-bin  # Ensure pdflatex/lualatex are linked
-    latexmk
-    collection-luatex
-    revtex4-1    # ← needed for \documentclass[aps,rmp,...]{revtex4-2}
-    # Fonts & Symbols
-    charter noto fontspec amsmath amsfonts amscls
-    cm-super   # High-quality default fonts
-    physics mathtools cancel braket siunitx
-    # Graphics & Diagrams
-    pgf tikz-cd circuitikz quantikz
-    adjustbox  subfig 
-    # Layout & Tables
-    booktabs float multirow colortbl  
-    geometry microtype parskip setspace ragged2e enumitem etoolbox csquotes
-    titlesec changepage caption xcolor tcolorbox 
-    # Bibliography & Meta
-    hyperref biblatex biber fancyhdr lastpage orcidlink
-    babel babel-english;
-    })
-
-  # PDF viewer (auto-reloads on recompile)
-  zathura
-];
-```
-
-> **Note:** Mason will show install failures for `css-lsp`, `html-lsp`, and `stylua` — this is expected on NixOS. These are already provided by Nix and work correctly. Ignore Mason's errors.
-
-Verify LSPs are on PATH:
+**LSP verification:**
 
 ```bash
 which vscode-html-language-server
@@ -135,193 +297,59 @@ which vscode-css-language-server
 which latexmk
 ```
 
----
+> Mason may report install failures for `css-lsp`, `html-lsp`, and `stylua` — these are already provided by Nix. Ignore Mason's errors.
 
-## Config File Overview
-
-| File | Purpose |
-|------|---------|
-| `lua/plugins/latex.lua` | VimTeX plugin — lualatex compiler, zathura viewer, folding, conceal |
-| `lua/plugins/zen.lua` | ZenMode — distraction-free writing (80 char width) |
-| `lua/plugins/cmp.lua` | Adds vimtex autocomplete source on top of NvChad defaults |
-| `lua/configs/lspconfig.lua` | Enables html, cssls, texlab LSP servers |
-| `lua/autocmds.lua` | Tex filetype settings — wrap, spell check, keymaps |
-
----
-
-## LaTeX Workflow
-
-Open a `.tex` file in nvim, then:
+**LaTeX keymaps (inside a `.tex` file):**
 
 | Keymap | Action |
-|--------|--------|
-| `\ll` | Start auto-compile with lualatex (watches file on save) |
+|---|---|
+| `\ll` | Start auto-compile (lualatex, watches on save) |
 | `\lk` | Stop auto-compile |
 | `\lv` | Open PDF in Zathura |
 | `\le` | Show compile errors |
 | `\lw` | Word count |
 | `\lz` | Toggle ZenMode |
-| `zc` / `zo` | Fold / unfold section under cursor |
-| `zM` / `zR` | Fold all / unfold all sections |
-| `<leader>s` | Spelling suggestions on cursor |
-
-Zathura auto-reloads the PDF on every recompile — no manual refresh needed.
+| `zc` / `zo` | Fold / unfold section |
+| `zM` / `zR` | Fold all / unfold all |
+| `<leader>s` | Spelling suggestions |
 
 ---
 
-## Mason Note
+## 12. SageMath Devshell
 
-Mason is kept as-is with no changes to `ensure_installed`. It may report failures for tools already installed via Nix — these errors are harmless. Nix-managed binaries are on `$PATH` and used directly by lspconfig.
+Pure Nix devshell — no conda, no pip, no ISO.
 
----
-
-## Adding a New SSH Client
-
-When you need to allow a new machine to SSH in:
-
-1. Set `PasswordAuthentication = true` in `modules/networking.nix` and rebuild
-2. From the new client: `ssh-copy-id ochinix@<T480s-IP>`
-3. Set `PasswordAuthentication = false` and rebuild
-
-> If SSH connection is suddenly refused from a known client, fail2ban may have banned your IP after too many failed attempts. Unban it on the T480s:
-> ```bash
-> sudo fail2ban-client unban 192.xxx.xx.xx
-> ```
-> Replace with your host machine's IP. Connection will work immediately after.
-
----
-
-## VPN
-
-ProtonVPN via WireGuard — no app needed, built into NetworkManager.
-
-```bash
-# Download WireGuard config from account.proton.me
-# Rename to a valid interface name
-mv ProtonVPN-config.conf protonvpn-xx.conf
-nmcli connection import type wireguard file protonvpn-xx.conf
-nmcli connection modify protonvpn-xx ipv6.method ignore
-
-# Connect / disconnect via terminal
-nmcli connection up protonvpn-xx
-nmcli connection down protonvpn-xx
-```
-
-Or toggle on/off directly from the GNOME top panel → network icon → VPN section — no terminal needed.
-
----
-
-### Encrypted Vault
-
-Vault directories are created automatically on every rebuild via `home.nix`:
-```
-~/
-├── Documents/
-│   ├── .vault/     ← encrypted storage (hidden, tracked by gocryptfs)
-│   └── Vault/      ← mount point (empty when locked, files visible when unlocked)
-└── Backups/
-    └── Vault_Encrypted_Backup/  ← rsync backup of encrypted vault
-```
-
-**One-time setup after fresh install:**
-```bash
-gocryptfs -init ~/Documents/.vault
-# Set a strong password when prompted — this is your vault password
-# Never needed again on this machine
-```
-
-**Daily usage via aliases:**
-```bash
-unlockv    # mount — enter vault password, files appear in ~/Documents/Vault
-lockv      # unmount — files hidden again
-backupv    # rsync encrypted .vault to ~/Backups (safe to backup encrypted)
-```
-
-> The vault is encrypted at rest. Even if someone accesses your disk, `.vault` contents are unreadable without the password. `lockv` before suspending or leaving the machine unattended.
-
----
-
-# SageMath — NixOS Devshell
-
-No conda, no pip, no ISO. Pure Nix.
-
----
-
-## Structure
-
+**Structure:**
 ```
 ~/Projects/Sage/
-├── flake.nix    ← nixpkgs pinned to 25.11 stable
-└── flake.lock   ← auto-generated, do not edit
+├── flake.nix    ← pinned to nixpkgs 25.11
+└── flake.lock
 ```
 
----
-
-## First Time Setup
+**First time setup:**
 
 ```bash
 cd ~/Projects/Sage
 nix develop --profile ~/.local/state/nix/profiles/sage
 ```
 
-> Downloads ~4.5GB on first run. Leave it alone until it finishes.
-> `--profile` pins the env so garbage collection never wipes it.
+> Downloads ~4.5GB on first run. The `--profile` flag pins the environment so garbage collection never removes it.
 
----
-
-## Daily Usage
+**Daily usage:**
 
 ```bash
-sage-env    # alias → cd ~/Projects/Sage && nix develop
+sage-env    # alias: cd ~/Projects/Sage && nix develop
 sage        # REPL
 ```
 
-Or for Jupyter notebook:
+**Jupyter notebook:**
 
 ```bash
 sage-env
 sage -n jupyter
 ```
 
-Once inside `nix develop`, you can `cd` anywhere — env stays active for that shell session.
-
----
-
-## Quick Test
-
-```python
-sage: var('x y')
-sage: plot(sin(x), (x, -2*pi, 2*pi))
-sage: plot3d(sin(x^2 + y^2), (x,-3,3),(y,-3,3))
-```
-
-> For best plot rendering use `sage -n jupyter` — opens inline in browser.
-
----
-
-## Garbage Collection Protection
-
-The profile pin + NixOS config ensures sage survives `nix-collect-garbage`.
-
-In `modules/packages.nix`:
-
-```nix
-nix.extraOptions = ''
-  keep-outputs = true
-  keep-derivations = true
-'';
-```
-
-Re-pin after any fresh download:
-
-```bash
-cd ~/Projects/Sage
-nix develop --profile ~/.local/state/nix/profiles/sage
-```
-
----
-
-## Updating
+**Updating:**
 
 ```bash
 cd ~/Projects/Sage
@@ -331,73 +359,95 @@ nix develop --profile ~/.local/state/nix/profiles/sage
 
 ---
 
-## `flake.nix`
+## 13. organize-tool
 
-```nix
-{
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+Automatically sorts `~/Downloads` by file type into subfolders, running hourly via a systemd user timer declared in `home.nix`.
 
-  outputs = { self, nixpkgs }: let
-    pkgs = nixpkgs.legacyPackages.x86_64-linux;
-  in {
-    devShells.x86_64-linux.default = pkgs.mkShell {
-      buildInputs = [ pkgs.sage ];
-    };
-  };
-}
-```
-
----
-
-### Flatpak Applications
-
-Installed via Flathub. Browsers and KDE apps kept as Flatpak for sandboxing and self-containment.
-
-| Name | Application ID |
-|------|----------------|
-| Brave | com.brave.Browser |
-| Microsoft Edge | com.microsoft.Edge |
-| Opera | com.opera.Opera |
-| Pinta | com.github.PintaProject.Pinta |
-| Sioyek | com.github.ahrm.sioyek |
-| Jellyfin Media Player | com.github.iwalton3.jellyfin-media-player |
-| Pixelorama | com.orama_interactive.Pixelorama |
-| Planify | io.github.alainm23.planify |
-| Weylus Community Edition | io.github.electronstudio.WeylusCommunityEdition |
-| Elisa | org.kde.elisa |
-| Krita | org.kde.krita |
-| Okular | org.kde.okular |
-| LocalSend | org.localsend.localsend_app |
-| GNU Octave | org.octave.Octave |
-| ONLYOFFICE Desktop Editors | org.onlyoffice.desktopeditors |
-| Signal Desktop | org.signal.Signal |
-| Telegram | org.telegram.desktop |
-| Thunderbird | org.mozilla.Thunderbird |
-
-Install all at once:
-```bash
-flatpak install flathub com.brave.Browser com.microsoft.Edge com.opera.Opera com.github.PintaProject.Pinta com.github.ahrm.sioyek com.github.iwalton3.jellyfin-media-player com.orama_interactive.Pixelorama io.github.alainm23.planify io.github.electronstudio.WeylusCommunityEdition org.kde.elisa org.kde.krita org.kde.okular org.localsend.localsend_app org.octave.Octave org.onlyoffice.desktopeditors org.signal.Signal org.telegram.desktop org.mozilla.Thunderbird net.code_industry.MasterPDFEditor
-```
-
----
-
-## Managing Packages & Config
-
-Once settled post-installation, clone the config into `/etc/nixos` to add packages or modify any module:
+Install after first rebuild:
 
 ```bash
-sudo git clone https://github.com/ochiuom/nixos-config-1os /etc/nixos
-sudo chown -R ochinix:users /etc/nixos
-cd /etc/nixos
+pipx install organize-tool
+pipx ensurepath
+organize --version
+```
 
-# Edit any .nix file as needed e.g. modules/packages.nix
-# Then rebuild — quick
-nsr
-# or with visual output and generation diff tracking
-nos
+The config at `organize/config.yaml` is deployed automatically on every rebuild.
 
-# If you notice any visual glitches or changes not reflected after rebuild,
-# a logout or full reboot will apply everything cleanly
+---
+
+## 14. Syncthing
+
+Syncthing starts automatically but device pairing must be done manually via the web UI on first deploy:
+
+```
+http://localhost:8384
+```
+
+Add pi5 as a remote device and configure shared folders. The pi5 device ID must be obtained from its Syncthing instance.
+
+---
+
+## 15. GSConnect
+
+GSConnect is paired with Galaxy S21 Ultra. On fresh install the pairing is lost. Re-pair from the phone:
+
+1. Open KDE Connect on Android
+2. Tap the PC when it appears in the list
+3. Accept the pairing request on desktop via the GSConnect notification
+
+---
+
+## 16. EasyEffects
+
+EasyEffects starts automatically with preset `C+Cry+BE+Max`. If audio processing sounds incorrect after a fresh deploy:
+
+```bash
+systemctl --user restart easyeffects
 ```
 
 ---
+
+## 17. MPD
+
+MPD starts automatically pointing to `~/Music`. Populate the database on first install:
+
+```bash
+mpc update
+```
+
+---
+
+## 18. SSH — Adding a New Client
+
+```bash
+# Step 1 — temporarily enable password auth
+# Set PasswordAuthentication = true in modules/networking.nix and rebuild
+
+# Step 2 — copy key from new client
+ssh-copy-id ochinix@<machine-ip>
+
+# Step 3 — disable password auth again
+# Set PasswordAuthentication = false in modules/networking.nix and rebuild
+```
+
+**If a known client is suddenly refused**, fail2ban may have banned the IP:
+
+```bash
+sudo fail2ban-client unban <IP>
+```
+
+---
+
+## 19. Boot Partition Maintenance
+
+If the `/boot` partition is small (such as 196M on a dual boot with Windows), space can fill up quickly. With lanzaboote UKIs at ~60MB each and `configurationLimit = 3`, a rebuild may fail with "no space left on device":
+```bash
+# Check what is consuming space
+du -ah /boot | sort -rh | head -20
+```
+
+Lanzaboote immediately recreates files during activation, so cleanup and rebuild must run as a single command:
+```bash
+# Remove everything and rebuild immediately — do not run separately
+sudo rm -rf /boot/EFI/nixos/* && nos
+```

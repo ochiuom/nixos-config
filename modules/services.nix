@@ -34,9 +34,11 @@
     ];
   };
 
+  services.tailscale.enable = true;
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-generations +3";
+    options = "--delete-generations +2";
   };
 }

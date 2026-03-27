@@ -1,0 +1,12 @@
+// ~/Projects/Sage/.vscode/settings.json
+{
+    "jupyter.defaultKernel": "sagemath",
+    "python.defaultInterpreterPath": "~/.local/state/nix/profiles/sage/bin/python",
+    "jupyter.notebookMetadata": {
+        "kernelspec": {
+            "display_name": "Sage (Nix Profile)",
+            "language": "sage",
+            "name": "sagemath"
+        }
+    }
+}

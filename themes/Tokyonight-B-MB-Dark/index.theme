@@ -1,0 +1,12 @@
+Type=X-GNOME-Metatheme
+[Desktop Entry]
+Name=Tokyonight-B-MB-Dark
+Comment=An Flat Gtk+ theme based on Elegant Design
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Tokyonight-B-MB-Dark
+MetacityTheme=Tokyonight-B-MB-Dark
+IconTheme=Tela-circle-Dark
+CursorTheme=Tokyonight-B-MB-cursors
+ButtonLayout=close,minimize,maximize:menu

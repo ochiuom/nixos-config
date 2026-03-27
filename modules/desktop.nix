@@ -5,7 +5,7 @@
 
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour gnome-connections geary epiphany totem
-    gnome-maps gnome-music gnome-weather gnome-contacts
+    gnome-maps gnome-music  gnome-contacts
     gnome-clocks gnome-calendar gnome-logs gnome-software 
   ];
   
@@ -20,6 +20,7 @@
   fonts = {
   packages = with pkgs; [
     ubuntu-classic
+    inter
     liberation_ttf
     noto-fonts
     noto-fonts-cjk-sans
@@ -29,6 +30,7 @@
     nerd-fonts.hack
     font-awesome
     atkinson-hyperlegible-next
+    atkinson-hyperlegible-mono
   ];
   fontconfig = {
     enable = true;
@@ -55,7 +57,7 @@
       "context.properties" = {
         "default.clock.rate" = 48000;
         "default.clock.allowed-rates" = [ 44100 48000 96000 192000 ];
-        "default.clock.quantum" = 1024;
+        "default.clock.quantum" =  256;  #1024;
         "default.clock.min-quantum" = 32;
         "default.clock.max-quantum" = 8192;
       };

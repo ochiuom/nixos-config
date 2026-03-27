@@ -1,9 +1,18 @@
 { config, pkgs, lib, ... }:
 {
-  environment.systemPackages = with pkgs; [
-    git vim wget curl htop ffmpeg libva-utils tree ncdu ticker
+
+   fonts.packages = with pkgs; [
+    libertinus
+   ];
+
+
+   environment.systemPackages = with pkgs; [
+    git vim wget curl htop ffmpeg libva-utils tree ncdu ticker nvd
     sbctl btrfs-progs cryptsetup pciutils usbutils lshw openssl
     networkmanagerapplet xdg-utils xdg-desktop-portal-gnome glib glib-networking gpick
+  
+    usbguard
+    tailscale
 
     nautilus-python
     gobject-introspection
@@ -18,6 +27,7 @@
     kitty ghostty
     vscode
     # zed-editor
+    sublime4
 
     vlc mpd mpc mpv mplayer smplayer
 
@@ -48,31 +58,47 @@
     poppler-utils
     pdfcpu
     font-bitstream-type1
+    
     # LaTeX
     (pkgs.texlive.combine {
     inherit (pkgs.texlive)
     scheme-small
-    latex-bin  # Ensure pdflatex/lualatex are linked
+    latex-bin
     latexmk
     collection-luatex
-    revtex4-1    # ← needed for \documentclass[aps,rmp,...]{revtex4-2}
+
+    # ADD THESE
+    collection-fontsrecommended
+    collection-latexextra
+    collection-bibtexextra
+
+    revtex4-1
     moderncv arydshln lm mathdesign
+    mdframed zref needspace tikzfill pdfcol abstract
+
+    libertinus libertinus-type1  newtx dblfloatfix
+
     # Fonts & Symbols
     charter noto fontspec amsmath amsfonts amscls
-    cm-super   # High-quality default fonts
+    cm-super
     physics mathtools cancel braket siunitx
-    # Graphics & Diagrams
+
+    # Graphics
     pgf tikz-cd circuitikz quantikz
-    adjustbox  subfig 
-    # Layout & Tables
-    booktabs float multirow colortbl  
+    adjustbox subfig
+
+    # Layout
+    booktabs float multirow colortbl
     geometry microtype parskip setspace ragged2e enumitem etoolbox csquotes
-    titlesec changepage caption xcolor tcolorbox 
-    # Bibliography & Meta
+    titlesec changepage caption xcolor tcolorbox
+
+    # Bibliography
     hyperref biblatex biber fancyhdr lastpage orcidlink
-    babel babel-english;
-    })
-    
+    babel babel-english
+
+    #beamer-package
+    dingbat bbm bbm-macros;
+    })    
 
     gnome-tweaks gnome-extension-manager
 
@@ -91,16 +117,16 @@
     gnomeExtensions.space-bar
    # gnomeExtensions.appindicator
     gnomeExtensions.tiling-assistant
-   # gnomeExtensions.logo-menu
+    gnomeExtensions.logo-menu
    # gnomeExtensions.lock-guard
     gnomeExtensions.ip-finder
     gnomeExtensions.color-picker
    # gnomeExtensions.dash2dock-lite
     gnomeExtensions.compact-top-bar
-    gnomeExtensions.advanced-weather-companion
+    #gnomeExtensions.advanced-weather-companion
    # gnomeExtensions.adaptive-brightness
-    gnomeExtensions.astra-monitor
-    gnomeExtensions.tophat
+    #gnomeExtensions.astra-monitor
+    #gnomeExtensions.tophat
     gnomeExtensions.gnome-40-ui-improvements
     gnomeExtensions.fuzzy-app-search
     gnomeExtensions.penguin-ai-chatbot
@@ -108,7 +134,15 @@
     gnomeExtensions.tailscale-status
    # gnomeExtensions.workspace-matrix
     gnomeExtensions.wallpaper-slideshow
-    gnomeExtensions.dash-to-panel
+    #gnomeExtensions.dash-to-panel
+    gnomeExtensions.open-bar
+    gnomeExtensions.top-bar-organizer
+    gnomeExtensions.vitals
+    gnomeExtensions.weather-or-not
+    gnomeExtensions.dash-to-dock
+    gnomeExtensions.app-menu-is-back
+    gnomeExtensions.media-controls
+    gnomeExtensions.app-grid-wizard
   ];
 
 
