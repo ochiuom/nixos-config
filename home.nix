@@ -824,15 +824,15 @@
     '';
   };
 
-  programs.vscode = {
-  enable = true;
-  package = pkgs.vscode.fhs; # wiki recommends fhs for extension compatibility
-  profiles.default.extensions = with pkgs.vscode-extensions; [
-    mkhl.direnv
-    ms-toolsai.jupyter
-    ms-python.python
-    ];
-  };
+#  programs.vscode = {
+#  enable = true;
+#  package = pkgs.vscode.fhs; # wiki recommends fhs for extension compatibility
+#  profiles.default.extensions = with pkgs.vscode-extensions; [
+#    mkhl.direnv
+#    ms-toolsai.jupyter
+#    ms-python.python
+#    ];
+#  };
 
   home.activation.createSageProject = lib.hm.dag.entryAfter ["writeBoundary"] ''
   mkdir -p ~/Projects/Sage
