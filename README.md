@@ -236,21 +236,80 @@ reboot
 - Once back in the OS, proceed to [POST_INSTALL.md](POST_INSTALL.md) for the rest of the setup
 ---
 
-## Key Commands
+## Shell Aliases & Commands
 
-Aliases defined in `home.nix`:
+Defined in `home.nix` → `programs.bash.shellAliases` and `initExtra`.
 
-```bash
-nos       # Rebuild and switch (via nh — recommended)
-nrs       # Rebuild and switch (via nixos-rebuild directly)
-update    # Update flake inputs + rebuild
-upgrade   # Update flake inputs + rebuild + garbage collect
-ngc       # Garbage collect (keep last 3 generations)
-UP        # Full system upgrade (flake + rebuild + flatpak + firmware + gc)
-unlockv   # Unlock encrypted vault
-lockv     # Lock vault
-backupv   # Rsync encrypted vault to ~/Backups
-```
+### NixOS
+
+| Command | Description |
+|---|---|
+| `nos` | Rebuild and switch via `nh` (recommended) |
+| `nrs` | Same as `nos` — kept for muscle memory |
+| `update` | `nix flake update` + rebuild |
+| `upgrade` | `nix flake update` + rebuild + garbage collect (keep 3 gens) |
+| `ngc` | Garbage collect, keep last 3 generations |
+| `UP` | Full upgrade: flake + rebuild + flatpak + firmware + gc |
+
+### Vault
+
+| Command | Description |
+|---|---|
+| `unlockv` | Mount encrypted vault via gocryptfs |
+| `lockv` | Unmount vault |
+| `backupv` | Rsync encrypted vault to `~/Backups` |
+
+### Disk & System
+
+| Command | Description |
+|---|---|
+| `usage` | Dashboard: disk, nix store, home, flatpak sizes, generations |
+| `clean-all` | Full clean: browser cache, journal, flatpak orphans, nix gens, store optimise |
+| `big` | Top 20 largest paths on filesystem |
+| `du` / `df` | `dust` / `duf` (modern replacements) |
+| `cleanram` | Drop page/slab cache |
+| `clean-journal` | Vacuum journal older than 7 days |
+| `bootload` | Top 10 slowest systemd units at boot |
+| `ssd` | Btrfs compression ratio (`compsize`) |
+| `zstat` | zram status |
+
+### Git
+
+| Command | Description |
+|---|---|
+| `gs` | `git status` |
+| `ga` | `git add .` |
+| `gc` | `git commit -m` |
+| `gp` | `git push` |
+| `gd` / `gds` | diff / diff staged |
+| `lg` | lazygit TUI |
+
+### Navigation & Search
+
+| Command | Description |
+|---|---|
+| `j` | Jump to directory via zoxide (`zi`) |
+| `br` | broot file manager |
+| `nav` | navi cheatsheet browser |
+| `f` | pay-respects (fix last command) |
+| `fif <term>` | ripgrep + fzf → open match in nvim |
+| `Ctrl+F` | fzf fuzzy `cd` |
+
+### Sync
+
+| Command | Description |
+|---|---|
+| `syncvault` | Rsync Vault → pi5 |
+| `syncworkdir` | Rsync workdir → pi5 |
+
+### Tmux
+
+| Command | Description |
+|---|---|
+| `ta` | Attach or create `main` session |
+| `tn <name>` | New named session |
+| `tl` | List sessions |
+| `tk <name>` | Kill session |
 
 ---
 
