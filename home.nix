@@ -80,8 +80,8 @@
 
   # Ghostty — kept as home.file since ghostty has no HM module yet
   home.file.".config/ghostty/config".text = ''
-    window-width = 105
-    window-height = 40
+    window-width = 90
+    window-height = 25
     window-step-resize = true
     font-family = JetBrains Mono
     font-size = 10
