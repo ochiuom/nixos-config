@@ -91,17 +91,28 @@
    };
  };
 
+  services.usbguard = {
+  enable = true;
+  rules = ''
+    # USB root hubs (xHCI controllers)
+    allow id 1d6b:0002 serial "0000:00:14.0" name "xHCI Host Controller" hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00
+    allow id 1d6b:0003 serial "0000:00:14.0" name "xHCI Host Controller" hash "3Wo3XWDgen1hD5xM3PSNl3P98kLp1RUTgGQ5HSxtf8k=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00
+    allow id 1d6b:0002 serial "0000:3c:00.0" name "xHCI Host Controller" hash "+k9gUUE6Cnbob2WB/I//KMZ1hZ1UgvI6RrqNkIDvdmQ=" parent-hash "MqMGvXaoRGbW2xRM7qOje/vWR+mVYqXh64So2xtu4uA=" with-interface 09:00:00
+    allow id 1d6b:0003 serial "0000:3c:00.0" name "xHCI Host Controller" hash "f/j0P3jeotLSPQLacl0JEBDT/k4mgTo84SKV39leYSc=" parent-hash "MqMGvXaoRGbW2xRM7qOje/vWR+mVYqXh64So2xtu4uA=" with-interface 09:00:00
 
-#  services.usbguard = {
-#  enable = true;
-#  rules = ''
-#    allow id 1d6b:0002 serial "0000:00:14.0" name "xHCI Host Controller" hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00 with-connect-type ""
-#    allow id 1d6b:0003 serial "0000:00:14.0" name "xHCI Host Controller" hash "prM+Jby/bFHCn2lNjQdAMbgc6tse3xVx+hZwjOPHSdQ=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00 with-connect-type ""
-#    allow id 058f:9540 serial "" name "EMV Smartcard Reader" hash "j6z/wqFtA1bZWwBIPmIr/g8KfsEQJ63vpgf4cBcNLbU=" parent-hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" via-port "1-1" with-interface 0b:00:00 with-connect-type "not used"
-#    allow id 13d3:56ff serial "" name "Integrated Camera" hash "a0FdFfjaZ15WXb4kCZLrU4YG4JsqWbVGG2hqB3/scwI=" parent-hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" via-port "1-7" with-interface { 0e:01:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 } with-connect-type "not used"
-#    allow id 8087:0029 serial "" name "" hash "ATK8pCmQtUYaUnwqUVuYssrOMkW8pdCSdZO4OC6zEtg=" parent-hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" via-port "1-10" with-interface { e0:01:01 e0:01:01 e0:01:01 e0:01:01 e0:01:01 e0:01:01 e0:01:01 e0:01:01 } with-connect-type "not used"
-#    reject id *:*
-#   '';
-#  };
+    # Integrated camera
+    allow id 5986:2113 serial "" name "Integrated Camera" hash "8WIUHlRXRajhb9Tp+q4NUjsyob4CQFAPUUTwCr+amic=" parent-hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" with-interface { 0e:01:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 0e:02:00 }
+
+    # Fingerprint reader (Synaptics)
+    allow id 06cb:009a serial "307cb886c57b" name "" hash "uZEb/kJ88tEjmWGWNL47yoOKSFdfDO7mqh/ubaoxsvA=" parent-hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" with-interface ff:00:00
+
+    # Card reader (Realtek)
+    allow id 0bda:0316 serial "20120501030900000" name "USB3.0-CRW" hash "WG1MSC3YZsmCslTNGpjTTjT2lUvhNfU4gEVvD3gIuV4=" parent-hash "3Wo3XWDgen1hD5xM3PSNl3P98kLp1RUTgGQ5HSxtf8k=" with-interface 08:06:50
+
+    # Block everything else
+    block
+   '';
+  };
+
 
 }

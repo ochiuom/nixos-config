@@ -301,6 +301,36 @@ It is commented out by default in `modules/packages.nix`:
 To enable, uncomment and rebuild.
 
 
+
+## USBGuard – T480s
+
+By default, USBGuard is enabled and **all external USB devices are blocked**.
+Only internal hardware (webcam, fingerprint reader, card reader, root hubs) is whitelisted.
+
+To temporarily allow a new USB device, run:
+```bash
+sudo usbguard allow-device <id>  # get id from: sudo usbguard list-devices
+```
+
+---
+
+### Disabling USBGuard
+
+If you need USB to work without whitelisting (e.g. during setup), comment out the
+USBGuard block in `modules/security.nix`:
+```nix
+# services.usbguard = {
+#   enable = true;
+#   ...
+# };
+```
+
+Then rebuild:
+```bash
+nos
+```
+
+
 ---
 
 ## Post Installation
