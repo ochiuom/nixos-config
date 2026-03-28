@@ -65,55 +65,72 @@ zram0          11.6GB   Compressed swap (zstd, 50% RAM)
 **Security**
 - Secure Boot via [lanzaboote](https://github.com/nix-community/lanzaboote)
 - Full disk encryption with LUKS2
-- btrfs with zstd compression across subvolumes
+- btrfs with zstd compression across all subvolumes
+- sudo-rs (memory-safe Rust replacement for sudo)
+- AppArmor with upstream profiles and kill-unconfined enabled
+- USBGuard with device whitelist — blocks unknown USB devices
+- Kernel module blacklist (amateur radio, obsolete filesystems, obscure protocols)
+- Full sysctl hardening (kptr, dmesg, ptrace, network stack, filesystem protections)
+- Core dumps disabled system-wide
+- DNS over TLS via systemd-resolved (Cloudflare malware-blocking `1.1.1.2`)
+- GNOME privacy lockdown (USB protection, no lock screen notifications, location disabled)
 - nftables firewall
 - fail2ban with incremental bans
-- Firefox sandboxed via firejail
-- SSH key-only authentication
-- Kernel hardening sysctls
+- firejail sandboxing for mpv and audacious
+- SSH key-only authentication with hardened ciphers and MACs
 
 **Power Management**
 - TLP with per-state CPU governor (performance on AC, powersave on battery)
-- throttled — fixes Intel BD PROCHOT throttling bug on T480s
 - thermald for thermal management
+- throttled for Intel CometLake-U power limit tuning
+- irqbalance for multi-core IRQ distribution
 - S3 deep sleep (`mem_sleep_default=deep`)
-- Battery charge thresholds (40–80%) for long-term health
+- Battery charge thresholds (70–80%) for long-term health
 - zram swap with zstd compression
 
 **Desktop**
 - Pure Wayland GNOME
 - GDM display manager
+- Declarative GNOME extension settings (dash-to-panel, blur-my-shell, astra-monitor, space-bar, and more)
 - Flatpak + Flathub
 - PipeWire audio with WirePlumber
-- Intel VA-API hardware video acceleration
+- Intel VA-API hardware video acceleration (intel-media-driver)
 - Plymouth boot splash
 
 **Networking**
+- DNS over TLS with malware/phishing blocking (Cloudflare `1.1.1.2`)
 - WireGuard VPN via NetworkManager (ProtonVPN)
 - Syncthing for file sync
-- Tor client with DNS
+- Tor client (SOCKS5 proxy for Thunderbird)
 
 ---
 
+
 ## Structure
+
 
 ```
 /etc/nixos/
-├── flake.nix                     # Inputs: nixpkgs, lanzaboote, home-manager
+├── flake.nix                        # Inputs: nixpkgs, home-manager, disko
 ├── flake.lock
-├── configuration.nix             # Entry point, imports all modules
-├── hardware-configuration.nix    # Auto-generated, do not edit
-├── disko.nix                     # Declarative disk layout (LUKS2 + btrfs + EFI)
-├── home.nix                      # Home Manager configuration
+├── configuration.nix                # Entry point, imports all modules
+├── hardware-configuration.nix       # Auto-generated from nixos-generate-config
+├── disko_1os.nix                    # Declarative disk layout (LUKS2 + btrfs + EFI)
+├── home.nix                         # Home Manager configuration
+├── POST_INSTALL.md                  # Post-install manual steps
+├── TROUBLESHOOT.md                  # Chroot recovery and rescue procedures
 └── modules/
-    ├── boot.nix                  # Bootloader, kernel, Plymouth, kernel params
-    ├── hardware.nix              # GPU, firmware, bluetooth, btrfs, zram
-    ├── networking.nix            # Hostname, firewall, SSH, fail2ban
-    ├── desktop.nix               # GNOME, GDM, Flatpak, fonts, PipeWire
-    ├── power.nix                 # TLP, throttled, thermald, sysctls
-    ├── security.nix              # firejail, sudo-rs, hardening
-    ├── packages.nix              # System packages
-    └── services.nix              # Syncthing, Tor, Nix settings, GC
+    ├── boot.nix                     # systemd-boot, kernel, Plymouth, kernel params
+    ├── hardware.nix                 # Intel iGPU, firmware, bluetooth, btrfs, zram
+    ├── networking.nix               # Hostname, firewall, SSH, fail2ban
+    ├── desktop.nix                  # GNOME, GDM, Flatpak, fonts, PipeWire
+    ├── power.nix                    # TLP, thermald, throttled, irqbalance, sysctls
+    ├── security.nix                 # sudo-rs, AppArmor, USBGuard, firejail, sysctl hardening, DNS
+    ├── packages.nix                 # System packages
+    ├── services.nix                 # Syncthing, Tor, Nix settings, GC
+    └── home/
+        ├── desktop-quote/           # Custom GNOME Shell extension (daily quote widget)
+        └── gnome-extensions.nix     # Declarative dconf settings for all GNOME extensions
 ```
 
 ---
@@ -221,29 +238,18 @@ reboot
 
 ## Key Commands
 
-These aliases are defined in `home.nix`:
+Aliases defined in `home.nix`:
 
 ```bash
-# Rebuild and switch
-nos
-
-# Update flake inputs and rebuild
-update
-
-# Update + rebuild + garbage collect
-upgrade
-
-# Full system upgrade (NixOS + Flatpak + firmware + GC)
-UP
-
-# Garbage collect (keep last 3 generations)
-ngc
-
-# Unlock encrypted vault
-unlockv
-
-# Lock vault
-lockv
+nos       # Rebuild and switch (via nh — recommended)
+nrs       # Rebuild and switch (via nixos-rebuild directly)
+update    # Update flake inputs + rebuild
+upgrade   # Update flake inputs + rebuild + garbage collect
+ngc       # Garbage collect (keep last 3 generations)
+UP        # Full system upgrade (flake + rebuild + flatpak + firmware + gc)
+unlockv   # Unlock encrypted vault
+lockv     # Lock vault
+backupv   # Rsync encrypted vault to ~/Backups
 ```
 
 ---
