@@ -137,9 +137,9 @@
     };
 
     "org/gnome/desktop/interface" = {
-      font-name           = lib.mkForce "Inter 11";
-      document-font-name  = lib.mkForce "Noto Sans 11";
-      monospace-font-name = lib.mkForce "JetBrainsMono Nerd Font 10";
+      font-name           = lib.mkForce "Inter 12";
+      document-font-name  = lib.mkForce "Noto Sans 12";
+      monospace-font-name = lib.mkForce "JetBrainsMono Nerd Font 12";
       color-scheme        = "prefer-dark";
       enable-animations   = true;
       text-scaling-factor = 0.9;
