@@ -115,7 +115,7 @@ zram0          11.6GB   Compressed swap (zstd, 50% RAM)
 ├── flake.lock
 ├── configuration.nix                # Entry point, imports all modules
 ├── hardware-configuration.nix       # Auto-generated from nixos-generate-config
-├── disko_1os.nix                    # Declarative disk layout (LUKS2 + btrfs + EFI)
+├── disko.nix                        # Declarative disk layout (LUKS2 + btrfs + EFI + Secure Boot)
 ├── home.nix                         # Home Manager configuration
 ├── POST_INSTALL.md                  # Post-install manual steps
 ├── TROUBLESHOOT.md                  # Chroot recovery and rescue procedures
