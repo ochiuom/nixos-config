@@ -10,7 +10,8 @@
 
   # ── AppArmor ─────────────────────────────────────────────────────────────────
   security.apparmor = {
-    enable = true;
+    enable = false;  # upstream nixpkgs bug, re-enable after next flake update
+   # enable = true;
     enableCache = true;
     killUnconfinedConfinables = true;
     packages = [ pkgs.apparmor-profiles ];
@@ -32,6 +33,10 @@
       vlc = {
         executable = "${lib.getBin pkgs.vlc}/bin/vlc";
         profile = "${pkgs.firejail}/etc/firejail/vlc.profile";
+      };
+      fragments = {
+      executable = "${lib.getBin pkgs.fragments}/bin/fragments";
+      profile = "${pkgs.firejail}/etc/firejail/transmission-gtk.profile";  # closest match
       };
     };
   };
@@ -91,9 +96,9 @@
    };
  };
 
-  services.usbguard = {
-  enable = true;
-  rules = ''
+   services.usbguard = {
+   enable = true;
+   rules = ''
     # USB root hubs (xHCI controllers)
     allow id 1d6b:0002 serial "0000:00:14.0" name "xHCI Host Controller" hash "jEP/6WzviqdJ5VSeTUY8PatCNBKeaREvo2OqdplND/o=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00
     allow id 1d6b:0003 serial "0000:00:14.0" name "xHCI Host Controller" hash "3Wo3XWDgen1hD5xM3PSNl3P98kLp1RUTgGQ5HSxtf8k=" parent-hash "rV9bfLq7c2eA4tYjVjwO4bxhm+y6GgZpl9J60L0fBkY=" with-interface 09:00:00
@@ -112,7 +117,6 @@
     # Block everything else
     block
    '';
-  };
-
+  };  
 
 }

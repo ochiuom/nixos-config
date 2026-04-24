@@ -9,6 +9,7 @@
     gnome-clocks gnome-calendar gnome-logs gnome-software 
   ];
   
+  services.tumbler.enable = true;  # GNOME thumbnail service
 
   services.flatpak.enable = true;
   xdg.portal = {
@@ -30,7 +31,7 @@
     nerd-fonts.hack
     font-awesome
     atkinson-hyperlegible-next
-    atkinson-hyperlegible-mono
+   # atkinson-hyperlegible-mono
   ];
   fontconfig = {
     enable = true;
@@ -64,5 +65,17 @@
     };
   };
 
+  environment.sessionVariables = {
+  XDG_DATA_DIRS = [
+    "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+   ];
+ };
 
+  xdg.mime.defaultApplications = {
+  "text/html"                = "brave-browser.desktop";
+  "x-scheme-handler/http"    = "brave-browser.desktop";
+  "x-scheme-handler/https"   = "brave-browser.desktop";
+  "x-scheme-handler/about"   = "brave-browser.desktop";
+  "x-scheme-handler/unknown" = "brave-browser.desktop";
+  };
 }

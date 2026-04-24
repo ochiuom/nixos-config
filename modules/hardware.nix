@@ -21,6 +21,12 @@
   };
 
   services.xserver.videoDrivers = [ "modesetting" ];
+  services.xserver = {
+    enable = true;
+    xkb.layout = "us";
+  };
+
+  services.fprintd.enable = true;
   services.fstrim.enable = true;
 
   services.btrfs.autoScrub = {

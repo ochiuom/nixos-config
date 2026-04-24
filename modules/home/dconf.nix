@@ -1,8 +1,139 @@
-# modules/home/gnome-extensions.nix
+# modules/home/dconf.nix
 { config, pkgs, lib, ... }:
 
 {
   dconf.settings = {
+    "org/gnome/mutter" = {
+      experimental-features = [
+        "scale-monitor-framebuffer"
+        "xwayland-native-scaling"
+      ];
+      edge-tiling        = true;
+      dynamic-workspaces = true;
+      center-new-windows = false;
+    };
+
+    "org/gnome/desktop/interface" = {
+      font-name           = lib.mkForce "Inter 12";
+      document-font-name  = lib.mkForce "Noto Sans 11";
+      monospace-font-name = lib.mkForce "JetBrainsMono Nerd Font 10";
+      color-scheme        = "prefer-dark";
+      enable-animations   = true;
+      text-scaling-factor = 1.0;
+      scaling-factor      = lib.hm.gvariant.mkUint32 1;
+    };
+
+    "org/gnome/desktop/wm/preferences" = {
+      titlebar-font    = lib.mkForce "Inter Bold 10";
+      button-layout    = "appmenu:minimize,maximize,close";
+      auto-raise       = false;
+      focus-mode       = "click";
+      num-workspaces   = 4;
+      window-placement = "automatic";
+    };
+
+    "org/gnome/desktop/screensaver" = {
+      lock-enabled = true;
+      lock-delay   = lib.hm.gvariant.mkUint32 0;
+      idle-activation-enabled = false;
+    };
+
+    "org/gnome/desktop/privacy" = {
+      usb-protection            = true;
+      usb-protection-level      = "lockscreen";
+      report-technical-problems = false;
+      send-software-usage-stats = false;
+      remove-old-trash-files    = true;
+      remove-old-temp-files     = true;
+      old-files-age             = lib.hm.gvariant.mkUint32 7;
+    };
+
+    "org/gnome/system/location".enabled = false;
+    "org/gnome/desktop/notifications".show-in-lock-screen = false;
+
+    "org/gnome/shell" = {
+      disable-user-extensions = false;
+      enabled-extensions = with pkgs.gnomeExtensions; [
+        user-themes.extensionUuid
+        caffeine.extensionUuid
+       # places-status-indicator.extensionUuid
+        blur-my-shell.extensionUuid
+        gsconnect.extensionUuid
+        desktop-cube.extensionUuid
+        burn-my-windows.extensionUuid
+        impatience.extensionUuid
+        compiz-windows-effect.extensionUuid
+        compiz-alike-magic-lamp-effect.extensionUuid
+        ddterm.extensionUuid
+        search-light.extensionUuid
+        #space-bar.extensionUuid
+        tiling-assistant.extensionUuid
+        ip-finder.extensionUuid
+        #color-picker.extensionUuid
+        compact-top-bar.extensionUuid
+        #advanced-weather-companion.extensionUuid
+        #astra-monitor.extensionUuid
+        #tophat.extensionUuid
+        gnome-40-ui-improvements.extensionUuid
+        fuzzy-app-search.extensionUuid
+        penguin-ai-chatbot.extensionUuid
+        status-area-horizontal-spacing.extensionUuid
+        tailscale-status.extensionUuid
+        #wallpaper-slideshow.extensionUuid
+        #dash-to-panel.extensionUuid
+        rounded-window-corners-reborn.extensionUuid
+        open-bar.extensionUuid
+        top-bar-organizer.extensionUuid
+        vitals.extensionUuid
+        weather-or-not.extensionUuid
+        logo-menu.extensionUuid
+       # dash2dock-lite.extensionUuid
+        dash-to-dock.extensionUuid
+        #app-menu-is-back.extensionUuid
+       # media-controls.extensionUuid
+        app-grid-wizard.extensionUuid
+        dynamic-music-pill.extensionUuid
+        pip-on-top.extensionUuid
+        soundbar.extensionUuid
+        "desktop-quote@ochinix"
+      ];
+    };
+
+
+    "org/gnome/desktop/wm/keybindings" = {
+      maximize              = [ "<Super>Up" ];
+      unmaximize            = [ "<Super>Down" ];
+      tile-left             = [ "<Super>Left" ];
+      tile-right            = [ "<Super>Right" ];
+      switch-to-workspace-1 = [ "<Super>1" ];
+      switch-to-workspace-2 = [ "<Super>2" ];
+      switch-to-workspace-3 = [ "<Super>3" ];
+      switch-to-workspace-4 = [ "<Super>4" ];
+      move-to-workspace-1   = [ "<Super><Shift>1" ];
+      move-to-workspace-2   = [ "<Super><Shift>2" ];
+      move-to-workspace-3   = [ "<Super><Shift>3" ];
+      move-to-workspace-4   = [ "<Super><Shift>4" ];
+      close                 = [ "<Super>q" ];
+    };
+
+    "org/gnome/shell/keybindings".toggle-overview = [ "<Super>s" ];
+
+    "org/gnome/desktop/peripherals/touchpad" = {
+      tap-to-click               = true;
+      two-finger-scrolling-enabled = true;
+      natural-scroll             = true;
+      disable-while-typing       = true;
+    };
+
+    "org/gnome/settings-daemon/plugins/power" = {
+      sleep-inactive-ac-timeout      = 0;
+      sleep-inactive-battery-timeout = 900;
+      power-button-action            = "suspend";
+      ambient-enabled                = false;
+      idle-dim                       = false;
+    };
+
+    "org/gnome/desktop/session".idle-delay = lib.hm.gvariant.mkUint32 0;
 
     # ── Blur My Shell ─────────────────────────────────────────────────
     "org/gnome/shell/extensions/blur-my-shell" = {

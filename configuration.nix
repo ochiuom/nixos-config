@@ -1,7 +1,6 @@
 { config, pkgs, lib, ... }:
 {
-
-    imports = [
+  imports = [
     ./modules/boot.nix
     ./modules/hardware.nix
     ./modules/networking.nix
@@ -11,12 +10,14 @@
     ./modules/packages.nix
     ./modules/services.nix
     ./modules/nixos/gdm.nix
+    ./audio-visual.nix
   ];
 
-  time.timeZone = "Asia/Kolkata";
+  # ── Locale ───────────────────────────────────────────────────────────────────
+  time.timeZone      = "Asia/Kolkata";
   i18n.defaultLocale = "en_US.UTF-8";
   console.keyMap = "us";
- 
+
   # ── User ─────────────────────────────────────────────────────────────────────
   users.users.ochinix = {
     isNormalUser = true;
@@ -28,10 +29,9 @@
   # ── Nix ──────────────────────────────────────────────────────────────────────
   nix.settings.trusted-users = [ "root" "ochinix" ];
 
+  
   # ── Unfree packages whitelist ─────────────────────────────────────────────
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "sublime4"
-  ];
+  nixpkgs.config.allowUnfree = true;  
 
   nixpkgs.config.permittedInsecurePackages = [
   "openssl-1.1.1w"
@@ -41,4 +41,11 @@
   # environment.defaultPackages = []; # remove implicit nano, perl, strace etc.
   environment.defaultPackages = lib.mkForce [ pkgs.nano ];
   system.stateVersion = "26.05";
+
+  #programs.nautilus-open-any-terminal = { enable   = true; terminal = "ghostty";  };
+
+  environment.variables = {
+  GST_PLUGIN_PATH = "/run/current-system/sw/lib/gstreamer-1.0/";
+  };
+
 }

@@ -1,0 +1,39 @@
+{ config, pkgs, lib, ... }:
+{
+  environment.systemPackages = with pkgs.gnomeExtensions; [
+    user-themes
+    caffeine
+   # places-status-indicator
+    blur-my-shell
+    gsconnect
+    desktop-cube
+    burn-my-windows
+    impatience
+    compiz-windows-effect
+    compiz-alike-magic-lamp-effect
+    ddterm
+    search-light
+    #space-bar
+    tiling-assistant
+    logo-menu
+    ip-finder
+    #color-picker
+    compact-top-bar
+    gnome-40-ui-improvements
+    fuzzy-app-search
+    penguin-ai-chatbot
+    status-area-horizontal-spacing
+    tailscale-status
+    #wallpaper-slideshow
+    open-bar
+    top-bar-organizer
+    vitals
+    weather-or-not
+    dash-to-dock
+    #app-menu-is-back
+    app-grid-wizard
+    dynamic-music-pill
+    pip-on-top
+    soundbar
+  ];
+}
