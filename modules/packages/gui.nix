@@ -21,7 +21,7 @@
     hunspellDicts.en_US
     texstudio
     texlab                       # LSP for LaTeX
-    vscode-langservers-extracted # LSP: HTML/CSS/JSON/Markdown
+   # vscode-langservers-extracted # LSP: HTML/CSS/JSON/Markdown
     stylua                       # Lua formatter (nvim)
     zathura                      # Lightweight PDF viewer
     pdfsam-basic                 # PDF split/merge
