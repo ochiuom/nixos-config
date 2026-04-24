@@ -12,7 +12,7 @@
 
     # ── Terminals & Editors ───────────────────────────────────────────────
     ghostty
-    vscode
+   # vscode
     sublime4
 
     # ── Documents & Office ────────────────────────────────────────────────
