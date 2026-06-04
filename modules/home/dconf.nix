@@ -58,43 +58,43 @@
         caffeine.extensionUuid
        # places-status-indicator.extensionUuid
         blur-my-shell.extensionUuid
-        gsconnect.extensionUuid
+       # gsconnect.extensionUuid
         desktop-cube.extensionUuid
         burn-my-windows.extensionUuid
-        impatience.extensionUuid
+        #impatience.extensionUuid
         compiz-windows-effect.extensionUuid
         compiz-alike-magic-lamp-effect.extensionUuid
         ddterm.extensionUuid
-        search-light.extensionUuid
+        #search-light.extensionUuid
         #space-bar.extensionUuid
         tiling-assistant.extensionUuid
         ip-finder.extensionUuid
         #color-picker.extensionUuid
-        compact-top-bar.extensionUuid
+       # compact-top-bar.extensionUuid
         #advanced-weather-companion.extensionUuid
         #astra-monitor.extensionUuid
         #tophat.extensionUuid
-        gnome-40-ui-improvements.extensionUuid
-        fuzzy-app-search.extensionUuid
-        penguin-ai-chatbot.extensionUuid
-        status-area-horizontal-spacing.extensionUuid
-        tailscale-status.extensionUuid
+        #gnome-40-ui-improvements.extensionUuid
+        #fuzzy-app-search.extensionUuid
+        #penguin-ai-chatbot.extensionUuid
+        #status-area-horizontal-spacing.extensionUuid
+        #tailscale-status.extensionUuid
         #wallpaper-slideshow.extensionUuid
         #dash-to-panel.extensionUuid
-        rounded-window-corners-reborn.extensionUuid
+        #rounded-window-corners-reborn.extensionUuid
         open-bar.extensionUuid
-        top-bar-organizer.extensionUuid
+        #top-bar-organizer.extensionUuid
         vitals.extensionUuid
         weather-or-not.extensionUuid
-        logo-menu.extensionUuid
+        #logo-menu.extensionUuid
        # dash2dock-lite.extensionUuid
         dash-to-dock.extensionUuid
         #app-menu-is-back.extensionUuid
        # media-controls.extensionUuid
-        app-grid-wizard.extensionUuid
+        #app-grid-wizard.extensionUuid
         dynamic-music-pill.extensionUuid
         pip-on-top.extensionUuid
-        soundbar.extensionUuid
+      #  soundbar.extensionUuid
         "desktop-quote@ochinix"
       ];
     };

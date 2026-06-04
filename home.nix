@@ -18,7 +18,7 @@
   home.packages = with pkgs; [
     # Shell utilities
     fd ripgrep eza dust duf bandwhich gping aria2 rsync p7zip
-    fastfetch blesh pipx btop navi broot lazygit delta
+    fastfetch blesh  btop navi broot lazygit delta
     
     # Media / Desktop
     easyeffects weylus xournalpp yt-dlp warp-terminal 

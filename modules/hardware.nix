@@ -16,14 +16,13 @@
 
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "iHD";
-    CLUTTER_BACKEND = "wayland";
     NIXOS_OZONE_WL = "1";
   };
 
   services.xserver.videoDrivers = [ "modesetting" ];
   services.xserver = {
     enable = true;
-    xkb.layout = "us";
+    xkb.layout = "gb";
   };
 
   services.fprintd.enable = true;

@@ -8,6 +8,11 @@
     openDefaultPorts = true;
   };
 
+  #systemd.services.syncthing.serviceConfig = {
+  #PrivateMounts = lib.mkForce false;
+ # PrivateUsers = lib.mkForce false;
+#  };
+
   services.tor = {
     enable = true;
     client.enable = true;

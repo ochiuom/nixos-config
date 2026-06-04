@@ -85,6 +85,10 @@
       # ── Projects ──────────────────────────────────────────────────────────
       sage-env = "cd ~/Projects/Sage && nix develop --profile ~/.local/state/nix/profiles/sage";
 
+      gnuplot  = "G_MESSAGES_DEBUG=none QT_QPA_PLATFORM=wayland GNUPLOT_LIB='$HOME/.config/gnuplot/lib:$HOME/.config/gnuplot/templates' gnuplot 2>/dev/null";
+      sageroot = "source $(root-config --prefix)/bin/thisroot.sh";
+      octave   = "flatpak run org.octave.Octave";
+
       # ── Disk Usage Dashboard ──────────────────────────────────────────────
       usage = ''
         echo "" &&
@@ -145,6 +149,8 @@
       HISTIGNORE          = "ls:ll:la:cd:pwd:exit:clear";
       FZF_DEFAULT_OPTS    = "--height 40% --layout=reverse --border --inline-info --color=header:italic";
       FZF_COMPLETION_TRIGGER = "**";
+      QT_QPA_PLATFORM     = "wayland;xcb";
+      GNUPLOT_LIB         = "$HOME/.config/gnuplot/lib:$HOME/.config/gnuplot/templates";
     };
 
     initExtra = ''
@@ -178,7 +184,6 @@
         _up_run "Updating Nix Flake"   bash -c "cd /etc/nixos && sudo nix flake update"
         _up_run "Rebuilding NixOS"     nh os switch --hostname ochinix-pc
         _up_run "Updating Flatpaks"    bash -c "flatpak update -y && flatpak uninstall --unused -y"
-        _up_run "Checking Firmware"    bash -c "sudo fwupdmgr get-updates -y; sudo fwupdmgr update -y; exit 0"
         _up_run "Cleaning Generations" bash -c "sudo nix-env --delete-generations +3 --profile /nix/var/nix/profiles/system && sudo nix-store --gc"
         local end_time=$(date +%s)
         local elapsed=$((end_time - start_time))
@@ -248,39 +253,35 @@
       alias syncvault='syncto /home/ochinix/Documents/Vault/ pi5:/home/ochiuom/Nixos/Vault/ "Vault"'
       alias syncworkdir='syncto /home/ochinix/workdir/ pi5:/home/ochiuom/Nixos/workdir/ "Workdir"'
 
-      # ── ble.sh ────────────────────────────────────────────────────────────
-      #command -v fastfetch >/dev/null 2>&1 && fastfetch
-
-      if [ -f "${pkgs.blesh}/share/blesh/ble.sh" ]; then
-        source "${pkgs.blesh}/share/blesh/ble.sh" --noattach
-        ble-attach
-        bleopt complete_style=menu
-        bleopt complete_ambiguous=menu
-        bleopt complete_menu_style=desc
-        bleopt complete_menu_maxlines=15
-        bleopt suggest_style=faint
+      # ── atuin — better history search ─────────────────────────────────────
+      if command -v atuin >/dev/null 2>&1; then
+        eval "$(atuin init bash)"
       fi
 
-      # carapace — load after ble.sh attaches
-      if command -v carapace >/dev/null 2>&1; then
-        blehook ATTACH+='source <(carapace _carapace bash)'
-      fi
-
-      # fzf keybindings — after ble.sh
+      # ── fzf keybindings ───────────────────────────────────────────────────
       eval "$(fzf --bash)"
     '';
   };
 
   # ── Program Integrations ──────────────────────────────────────────────────
-  programs.fzf         = { enable = true; enableBashIntegration = true; };
-  programs.zoxide      = { enable = true; enableBashIntegration = true; };
-  programs.starship    = { enable = true; enableBashIntegration = true; };
+  programs.fzf          = { enable = true; enableBashIntegration = true; };
+  programs.zoxide       = { enable = true; enableBashIntegration = true; };
+  programs.starship     = { enable = true; enableBashIntegration = true; };
   programs.pay-respects = { enable = true; enableBashIntegration = true; };
-  programs.direnv      = { enable = true; enableBashIntegration = true; nix-direnv.enable = true; };
-  programs.carapace    = { enable = true; enableBashIntegration = false; }; # manual via blehook
-  programs.bat         = { enable = true; config.theme = "TwoDark"; };
-  programs.btop        = { enable = true; settings.vim_keys = true; };
-  programs.vscode      = { enable = true; package = pkgs.vscode.fhs; };
+  programs.direnv       = { enable = true; enableBashIntegration = true; nix-direnv.enable = true; };
+  programs.carapace     = { enable = true; enableBashIntegration = true; };
+  programs.bat          = { enable = true; config.theme = "TwoDark"; };
+  programs.btop         = { enable = true; settings.vim_keys = true; };
+  programs.vscode       = { enable = true; package = pkgs.vscode.fhs; };
+  programs.atuin        = {
+    enable               = true;
+    enableBashIntegration = true;
+    settings = {
+      style         = "compact";
+      inline_height = 15;
+      ctrl_n_shortcuts = true;
+    };
+  };
 
   programs.broot = {
     enable                = true;

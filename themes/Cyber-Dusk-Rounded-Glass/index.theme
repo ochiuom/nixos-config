@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Cyber Dusk - Rounded Glass
+Comment=Deep indigo glass-morphism theme with neon blue accents
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Cyber Dusk - Rounded Glass
+MetacityTheme=Cyber Dusk - Rounded Glass
+IconTheme=Kora
+CursorTheme=Adwaita
+ButtonLayout=close,minimize,maximize:
+

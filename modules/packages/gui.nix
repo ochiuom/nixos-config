@@ -14,7 +14,7 @@
     ghostty
     vscode
     sublime4
-
+    nemo
     # ── Documents & Office ────────────────────────────────────────────────
     libreoffice-fresh
     hunspell
@@ -26,7 +26,7 @@
     zathura                      # Lightweight PDF viewer
     pdfsam-basic                 # PDF split/merge
     evince                       # GNOME document viewer
-
+    zotero
     # ── Media — Audio ─────────────────────────────────────────────────────
     audacious
     audacious-plugins
@@ -52,6 +52,7 @@
     shotwell                     # Photo manager
     gpick                        # Color picker (X11)
     wl-color-picker              # Color picker (Wayland)
+    veusz
 
     # ── File Management ───────────────────────────────────────────────────
     yazi                         # Terminal file manager
@@ -72,6 +73,11 @@
 
     # ── Pi5 Server ────────────────────────────────────────────────────
     joplin-desktop
+
+    #Analysis
+    root
+    scrcpy
+    
 
   ];
 }

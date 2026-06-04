@@ -1,0 +1,543 @@
+@define-color radioactive_base #7aa2f7; /* Toned down, deeper #7aa2f7 */
+@define-color radioactive_dark #7aa2f7; /* For darker gradients/rims */
+@define-color radioactive_glow rgba(122, 162, 247, 0.3);
+stage {
+    -st-accent-color: @radioactive_base;
+    -st-accent-bg-color: @radioactive_base;
+    -st-accent-fg-color: #000000;
+}
+#panel {
+    background-color: rgba(28, 28, 46, 0.8); /* Deep Wizard Navy */
+    height: 30px;
+    border-radius: 0px; /* Sharp outer edges */
+    border-bottom: 1px solid rgba(122, 162, 247, 0.3); /* Radioactive seam */
+}
+#panel .panel-button {
+    /* Mix of your 'Frosted' and 'Hazy' logic */
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff; /* White text for contrast on Navy */ 
+    /* The 'Inner Glow' and 'Rim' logic from your blocks */
+    box-shadow: inset 0 0 4px rgba(122, 162, 247, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    -st-utils-border-radius: 14px;
+    border-radius: 14px;
+    margin: 0;
+    padding: 0 12px;
+    height: auto;
+    transition: all 150ms ease-in-out;
+}
+/* Hover/Active State for Pills (Radioactive Ignite) */
+#panel .panel-button:hover,
+#panel .panel-button:active,
+#panel .panel-button:checked {
+    background-color: rgba(122, 162, 247, 0.3);
+    border: 1px solid #7aa2f7;
+    /* The 'Bleeding Haze' glow from your request */
+    box-shadow: 0 0 12px 2px #7aa2f7;
+    color: #7aa2f7;
+}
+
+/* --- RUNNING APP BACKLIGHT (Dash icons) --- */
+#panel .dash-item-container .app-well-app.running-dot,
+#panel .app-menu.running-dot {
+    background-color: rgba(122, 162, 247, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 0 15px 3px #7aa2f7;
+    width: 28px;
+    height: 4px;
+    margin-bottom: 2px;
+}
+/* Icon 'Glow Pool' effect */
+#panel .dash-item-container:active,
+#panel .dash-item-container:checked {
+    background-color: rgba(122, 162, 247, 0.15);
+    box-shadow: inset 0 0 8px rgba(122, 162, 247, 0.3);
+}
+/* Specific Reset for Dash Icons to ensure they stay Full Color */
+#panel .show-apps StIcon,
+#panel .app-menu StIcon,
+#panel .dash-item-container StIcon {
+    color: white;
+    -st-icon-style: regular;
+}
+#panel .panel-button {
+    background-color: rgba(28, 28, 46, 0.8);
+    border: 1px solid rgba(28, 28, 46, 0.8);
+    color: #ffffff;
+    font-weight: bold;
+    
+    -st-utils-border-radius: 14px;
+    border-radius: 14px;
+    margin: 0;
+    padding: 0 12px;
+}
+#panel .panel-button:hover {
+    background-color: #7aa2f7;
+    border: 1px solid #000000;
+    color: #000000; /* Black text on #7aa2f7 pops perfectly */
+    box-shadow: 0 0 15px 2px #7aa2f7;
+}
+/* ACTIVE STATE (When menu is open) */
+#panel .panel-button:active,
+#panel .panel-button:checked {
+    background-color: rgba(122, 162, 247, 0.25);
+    border: 1px solid #7aa2f7;
+    box-shadow: 0 0 15px 2px rgba(122, 162, 247, 0.3);
+    color: #7aa2f7;
+}
+/* Force icons inside pills to match the text color */
+#panel .panel-button StIcon,
+#panel .panel-button .system-status-icon {
+    icon-size: 16px;
+    color: inherit;
+    -st-icon-style: symbolic;
+}
+/* --- THE DASH & ICON FIX --- */
+#panel .show-apps StIcon,
+#panel .app-menu StIcon,
+#panel .dash-item-container StIcon {
+    color: white;
+    -st-icon-style: regular;
+    icon-size: 18px;
+}
+#panel .dash-item-container {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+#panel .dash-item-container.running-dot {
+    background-color: transparent;
+}
+/* --- THE WIZARD MENU SURFACES --- */
+.datemenu-menu,
+.quick-settings,
+.popup-menu-content {
+    background-color: #1c1c2e; 
+    border: 1px solid #7aa2f7; /* Radioactive Rim */
+    border-radius: 24px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.35); 
+    color: #ffffff; /* White text on Navy */
+    margin: 8px;
+}
+
+/* --- WIZARD QUICK SETTINGS & MENU INTERIORS --- */
+/* 1. THE GLOBAL TEXT & ICON COLOR (Wizard Mode) */
+/* This forces white text for readability on the new Deep Blue background */
+.quick-settings, 
+.datemenu-menu, 
+.popup-menu-content,
+.popup-menu-item,
+.message-list,
+.calendar,
+.quick-toggle,
+.quick-settings-tile {
+    color: #ffffff;
+}
+/* 2. THE RADIOACTIVE ACCENT (The Logic Flip) */
+/* When active, the background turns #7aa2f7, so text/icons MUST turn Black */
+.quick-toggle:checked,
+.quick-settings-tile:checked,
+.quick-toggle-menu-button:checked,
+.popup-menu-item:hover,
+.popup-menu-item:focus,
+.calendar-today {
+    background-color: #7aa2f7;
+    color: #ffffff; /* High contrast black */
+    border: none;
+    box-shadow: none;
+}
+/* FIX: Kill the "ugly line" separator between toggle and arrow */
+.quick-toggle-separator {
+    background-color: transparent;
+    width: 0px;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+/* 3. INDIVIDUAL TOGGLE STATES (Hover & Inactive) */
+.quick-toggle, .quick-settings-tile {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    transition: all 200ms ease;
+    border: none;
+}
+/* NEW: Radioactive Hover (Light #7aa2f7) */
+.quick-toggle:hover, 
+.quick-settings-tile:hover,
+.quick-toggle-menu-button:hover {
+    background-color: #7aa2f7; /* Light Radioactive #7aa2f7 */
+    color: #000000;
+}
+/* 4. THE ARROW BUTTON SYNC */
+.quick-toggle-has-menu .quick-toggle-menu-button:checked {
+    background-color: #7aa2f7; /* Radioactive Dark to distinguish the arrow */
+    color: #000000;
+    border-left: 1px solid rgba(0,0,0,0.2);
+    /* FIX: Force equal dimensions and high radius for a perfect circle */
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 99px;
+}
+/* 5. SLIDER SYNC (Volume & Brightness) */
+.slider {
+    -bar-level-active-background-color: #7aa2f7; /* Radioactive Base */
+    -bar-level-background-color: rgba(255, 255, 255, 0.08);
+}
+
+
+.slider-handle {
+    background-color: #ffffff;
+    border: 2px solid #7aa2f7;
+    box-shadow: 0 0 10px #7aa2f7;
+}
+
+
+/* 1. THE SUB-MENU (WiFi/BT Lists) */
+.quick-toggle-menu {
+  border-radius: 20px;
+  padding: 8px;
+  margin: 8px 12px 0;
+  background-color: #1c1c2e; 
+  color: #ffffff; 
+  border: 1px solid #7aa2f7; 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+/* 6. ICON SPECIFICITY */
+/* Ensures all icons follow the Black-on-#7aa2f7 rule */
+.quick-settings StIcon,
+.popup-menu-item StIcon,
+.message StIcon {
+    color: inherit;
+}
+
+/* 7. NOTIFICATION CARDS */
+.message {
+    background-color: rgba(255, 255, 255, 0.08); /* Glass effect */
+    border-radius: 18px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Hover/Active state for Notifications to match the theme */
+.message:hover, .message:focus {
+    background-color: #7aa2f7; /* Radioactive Base */
+    color: #000000;
+    border: 1px solid #7aa2f7;
+}
+/* --- THE WIZARD SUB-MENU & NOTIFICATION SYNC --- */
+
+/* 2. SUB-MENU ITEMS (Individual list entries) */
+.quick-toggle-menu .popup-menu-item {
+  padding: 6px 12px;
+  border-radius: 12px;
+  color: #ffffff;
+}
+
+.quick-toggle-menu .popup-menu-item StLabel {
+  color: #ffffff;
+}
+
+/* THE SELECTION FLIP - Radioactive Overdrive */
+.quick-toggle-menu .popup-menu-item:focus, 
+.quick-toggle-menu .popup-menu-item:hover, 
+.quick-toggle-menu .popup-menu-item.selected {
+  color: #000000; /* Flip to black for #7aa2f7 contrast */
+  background-color: #7aa2f7; 
+}
+
+.quick-toggle-menu .popup-menu-icon {
+  color: inherit;
+}
+
+/* 3. BACKGROUND APP HIGHLIGHTS */
+.background-app-item .icon-button:focus, 
+.background-app-item .icon-button:hover {
+  color: #000000; 
+  background-color: #7aa2f7;
+}
+
+/* 4. THE WIZARD NOTIFICATION BANNER */
+.notification-banner {
+  margin: 10px;
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid #7aa2f7; 
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  background-color: #1c1c2e; /* Wizard Navy */
+}
+
+/* Hovering over a notification card */
+.notification-banner:hover {
+  background-color: #1c1c2e; 
+}
+
+/* Notification Action Buttons */
+.notification-button {
+  border-radius: 12px;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.notification-button:focus,
+.notification-button:hover {
+  background-color: #7aa2f7;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
+/* 5. QUICK SETTINGS TOGGLE ICONS */
+/* Ensures Black Icons ONLY on #7aa2f7 background */
+.quick-toggle:checked StIcon,
+.quick-toggle-menu-button:checked StIcon {
+    color: #000000;
+}
+
+/* White Icons on Navy background */
+.quick-toggle StIcon,
+.quick-toggle-menu-button StIcon {
+    color: #ffffff;
+}
+/* --- POLKIT / PASSWORD PROMPT MAGIC --- */
+.user-icon {
+  background-size: contain;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 9999px;
+  icon-size: 164px;
+}
+
+.user-icon:hover {
+  color: white;
+}
+
+.user-icon StIcon {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 99px;
+  padding: 12px;
+  width: 40px;
+  height: 40px;
+}
+
+.user-icon.user-avatar {
+  border: 2px rgba(255, 255, 255, 0.7);
+}
+
+.user-widget.vertical .user-icon {
+  icon-size: 128px;
+}
+
+.user-widget.vertical .user-icon StIcon {
+  padding: 20px;
+  padding-top: 18px;
+  padding-bottom: 22px;
+  width: 88px;
+  height: 88px;
+}
+
+/* 1. Shrink the main dialog width by 20-30% */
+.modal-dialog {
+    width: 320px; /* Forces a much sleeker, thinner profile */
+    border-radius: 24px;
+    background-color: #1c1c2e; /* Your Blue-Grey */
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Glow */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.55);
+}
+
+/* 2. Make the User Icon/Avatar massive (120px) */
+.modal-dialog .user-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 60px; /* Keep it perfectly circular */
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    margin: 10px auto;
+}
+
+/* 3. Tighten up the spacing (Remove the 'empty' feel) */
+.prompt-dialog-main-layout {
+    spacing: 12px;
+    padding: 20px;
+}
+
+/* 4. Shrink the Password Entry field to match the sleek width */
+.prompt-dialog-password-entry {
+    width: 240px;
+    border-radius: 17px;
+    background-color: #1c1c2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 5. Clean up buttons */
+.modal-dialog-button-box {
+    spacing: 10px;
+    padding-top: 10px;
+}
+
+.modal-dialog-button {
+    border-radius: 17px;
+}
+/**************************
+
+/*SYMBOLIC ICONS-------------------*/
+
+.icon-button StIcon, .background-app-item .close-button StIcon, .message .message-header .message-expand-button StIcon,
+.message .message-header .message-close-button StIcon, .message-notification-group .message-collapse-button StIcon {
+  icon-size: 16px;
+  -st-icon-style: regular;
+}
+.message-list .message-list-placeholder > StIcon {
+  icon-size: 96px;
+  -st-icon-style: regular;
+}
+.message .message-header .message-source-icon {
+  icon-size: 1.091em;
+  -st-icon-style: regular;
+}
+.message .message-box .message-icon {
+  icon-size: 48px;
+  -st-icon-style: regular;
+}
+.quick-toggle-menu .popup-menu-item > StIcon {
+  -st-icon-style: regular;
+  icon-size: 1.091em;
+}
+.quick-settings-system-item .icon-button > StIcon, .quick-settings-system-item .background-app-item .close-button > StIcon, .background-app-item .quick-settings-system-item .close-button > StIcon, .quick-settings-system-item .message-notification-group .message-collapse-button > StIcon, .message-notification-group .quick-settings-system-item .message-collapse-button > StIcon, .quick-settings-system-item .message .message-header .message-expand-button > StIcon, .message .message-header .quick-settings-system-item .message-expand-button > StIcon,
+.quick-settings-system-item .message .message-header .message-close-button > StIcon,
+.message .message-header .quick-settings-system-item .message-close-button > StIcon {
+  -st-icon-style: regular;
+}
+.bt-device-item .popup-menu-icon {
+  -st-icon-style: regular;
+}
+.background-app-item .popup-menu-icon {
+  icon-size: 32px;
+  -st-icon-style: regular;
+}
+#panel .panel-button .app-menu-icon {
+  -st-icon-style: regular;
+}
+/*hackkkkkkkkkkkkkkkkkkkkkkkkkkkkksssssssssssssssssssssssssssssss*/
+
+/* Red 'Destructive' buttons in Shell dialogs */
+.destructive-action {
+  background-color: #ff5555;
+  color: white;
+}
+
+/* #7aa2f7 'Suggested' buttons in Shell dialogs */
+.suggested-action {
+  background-color: #7aa2f7;
+  color: #1c1c2e;
+}
+
+/* Add that same glow to Shell buttons */
+.button {
+  border: 1px solid rgba(98, 114, 164, 0.2);
+}
+
+
+/* Shell Scrollbar Styling */
+StScrollbar {
+    padding: 2px;
+}
+
+
+StButton#vhandle, StButton#hhandle {
+    border: 2px solid transparent;
+}
+/******************************/
+* {border-radius: 18px;}
+/********************************//********************************************************************************/
+/* Target the Alt+F2 Run Dialog input field */
+.run-dialog-entry {
+    background-color: #7aa2f7; /* Radioactive Base */
+    color: #000000;
+    border-radius: 12px;
+    border: 1px solid rgba(122, 162, 247, 0.2); /* Radioactive Dark border */
+}
+
+/* The "Electric" Focus Glow */
+.run-dialog-entry:focus {
+    border-color: #7aa2f7; /* Radioactive Dark */
+    /* This creates the electric radioactive halo you're after */
+    box-shadow: 0 0 10px 2px rgba(122, 162, 247, 0.7); 
+    outline: none; /* Removes the default system ring */
+}
+/* --- CONTEXT MENUS (GNOME SHELL) --- */
+
+/* Selection/Hover highlight for system menus */
+.popup-menu-item:hover,
+.popup-menu-item:selected,
+.popup-menu-item:active,
+.popup-menu-item:focus {
+    background-color: #7aa2f7; /* Radioactive Dark */
+    color: #000000;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(122, 162, 247, 0.7);
+}
+
+/* Ensure the text is visible against our new selection color */
+.popup-menu-item:selected StLabel {
+    color: #000000;
+}
+
+
+ /**************************popup OSD********************************/
+/* Target the container for the bar and icon */
+.osd-window {
+    background-color: rgba(40, 42, 54, 0.9);
+    border-radius: 20px;
+    border: 1px solid rgba(122, 162, 247, 0.6);
+}
+
+/* The actual bar background (the empty part) */
+.osd-window .level {
+    height: 12px;
+    -barlevel-active-background-color: #7aa2f7; /* Your radioactive blue */
+    -barlevel-overdrive-color: #f7768e; /* Optional: for over 100% volume */
+    color: #7aa2f7;
+        /* Use RGBA here for the 'empty' part of the bar */
+    -barlevel-background-color: rgba(40, 42, 54, 0.4); 
+        opacity: 1.0; 
+}
+
+/* For the icon (White with glow) */
+.osd-window StIcon {
+    icon-size: 48px;
+    color: #ffffff;
+    /* Use -st-icon-style for modern shell versions if filter fails */
+    -st-icon-style: symbolic;
+    filter: drop-shadow(0 0 8px rgba(122, 162, 247, 0.8));
+}
+.osd-window {
+    /* Lower the last number (0.6) for more transparency on the main box */
+    background-color: rgba(40, 42, 54, 0.6); 
+}
+/****************************/
+
+/* --- THEME OVERRIDES --- */
+@define-color accent_color #1793d1; /* Radioactive #1793d1 */
+@define-color accent_dark #1793d1;   /* Deep shadow version */
+
+/****************************/
+
+* { border-radius: 30px; }
+
+StEntry {
+        padding: 4px 12px;
+}
+.search-entry {
+      padding: 8px 16px;
+}
+.search-entry StLabel {
+      margin-top: 2px;
+      margin-bottom: 2px;
+}
+/********************/
+* { border-radius: 30px; }
+/********************/
+/******************/
+* {
+    background-color: @window_bg_color;
+    color: #ffffff;
+}

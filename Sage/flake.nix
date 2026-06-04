@@ -1,6 +1,6 @@
 # ~/projects/sage/flake.nix
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+ inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
 
   outputs = { self, nixpkgs }: let
     pkgs = nixpkgs.legacyPackages.x86_64-linux;

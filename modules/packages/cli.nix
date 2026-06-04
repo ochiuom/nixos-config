@@ -12,7 +12,8 @@
     xdg-utils
     fwupd
     gnupg
-
+    android-tools   
+    atuin
     # ── Modern CLI Replacements ───────────────────────────────────────────
     fd                           # find
     ripgrep                      # grep
@@ -66,6 +67,10 @@
 
     # ── Finance ───────────────────────────────────────────────────────────
     ticker                       # stock ticker CLI
+    
+    #Install Gnuplot with high-quality terminal support
+    (gnuplot.override { withQt = true; withWxGTK = true; })
+    ghostscript # Required for EPS/PDF processing
 
 ] ++ (with pkgs.gst_all_1; [
   gstreamer
