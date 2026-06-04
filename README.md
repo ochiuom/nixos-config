@@ -2,6 +2,28 @@
 
 Personal NixOS flake configuration for a Lenovo ThinkPad T480s running a pure Wayland GNOME desktop.
 
+
+# NixOS 26.05 Upgrade — Secure Boot Fix
+
+After upgrading to 26.05, if the system fails to boot with a **Security violation** error:
+
+1. Disable Secure Boot in BIOS (F1 on ThinkPad splash → Security → Secure Boot → Disable)
+
+2. Boot into NixOS, then check unsigned binaries:
+
+```bash
+sudo sbctl verify
+```
+
+3. Sign the new kernel (use the actual path shown by sbctl verify):
+
+```bash
+sudo sbctl sign -s /boot/EFI/nixos/xsfjsfcueyqfenahdohodhh-linux-7.0.11-bzImage.efi
+```
+
+4. Re-enable Secure Boot in BIOS and reboot.
+
+
 ---
 
 ## Why NixOS
