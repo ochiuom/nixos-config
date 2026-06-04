@@ -8,7 +8,7 @@
     ./modules/power.nix
     ./modules/packages.nix
     ./modules/services.nix
-    ./modules/nixos/gdm.nix
+   # ./modules/nixos/gdm.nix
     ./modules/security/security.nix
     ./modules/security/clamav.nix
    # ./modules/security/audit.nix
@@ -18,8 +18,7 @@
   # ── Locale ───────────────────────────────────────────────────────────────────
   time.timeZone      = "Asia/Kolkata";
   i18n.defaultLocale = "en_US.UTF-8";
- # console.keyMap = "uk";
- console.useXkbConfig = true;
+  console.useXkbConfig = true;
   # ── User ─────────────────────────────────────────────────────────────────────
   users.users.ochinix = {
     isNormalUser = true;
