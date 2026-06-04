@@ -22,7 +22,7 @@
   services.xserver.videoDrivers = [ "modesetting" ];
   services.xserver = {
     enable = true;
-    xkb.layout = "gb";
+    xkb.layout = "us";
   };
 
   services.fprintd.enable = true;
